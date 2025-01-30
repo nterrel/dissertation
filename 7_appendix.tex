@@ -1,0 +1,306 @@
+\chapter{Neural network structures in ANAKIN-ME models}
+
+Give the shape and number of parameters of ANI networks (at least 1x, 1ccx, 2x, DR, and 1xnr since these are all being used or referenced in this dissertation. 
+
+Format this nicely:
+ANI-2x
+$BuiltinModel(
+  (aev_computer): AEVComputer(
+    (angular_terms): StandardAngular(
+      (cutoff_fn): CutoffCosine()
+    )
+    (radial_terms): StandardRadial(
+      (cutoff_fn): CutoffCosine()
+    )
+    (neighborlist): FullPairwise()
+  )
+  (neural_networks): Ensemble(
+    (0-7): 8 x ANIModel(
+      (H): Sequential(
+        (0): Linear(in_features=1008, out_features=256, bias=True)
+        (1): CELU(alpha=0.1)
+        (2): Linear(in_features=256, out_features=192, bias=True)
+        (3): CELU(alpha=0.1)
+        (4): Linear(in_features=192, out_features=160, bias=True)
+        (5): CELU(alpha=0.1)
+        (6): Linear(in_features=160, out_features=1, bias=True)
+      )
+      (C): Sequential(
+        (0): Linear(in_features=1008, out_features=224, bias=True)
+        (1): CELU(alpha=0.1)
+        (2): Linear(in_features=224, out_features=192, bias=True)
+        (3): CELU(alpha=0.1)
+        (4): Linear(in_features=192, out_features=160, bias=True)
+        (5): CELU(alpha=0.1)
+        (6): Linear(in_features=160, out_features=1, bias=True)
+      )
+      (N): Sequential(
+        (0): Linear(in_features=1008, out_features=192, bias=True)
+        (1): CELU(alpha=0.1)
+        (2): Linear(in_features=192, out_features=160, bias=True)
+        (3): CELU(alpha=0.1)
+        (4): Linear(in_features=160, out_features=128, bias=True)
+        (5): CELU(alpha=0.1)
+        (6): Linear(in_features=128, out_features=1, bias=True)
+      )
+      (O): Sequential(
+        (0): Linear(in_features=1008, out_features=192, bias=True)
+        (1): CELU(alpha=0.1)
+        (2): Linear(in_features=192, out_features=160, bias=True)
+        (3): CELU(alpha=0.1)
+        (4): Linear(in_features=160, out_features=128, bias=True)
+        (5): CELU(alpha=0.1)
+        (6): Linear(in_features=128, out_features=1, bias=True)
+      )
+      (S): Sequential(
+        (0): Linear(in_features=1008, out_features=160, bias=True)
+        (1): CELU(alpha=0.1)
+        (2): Linear(in_features=160, out_features=128, bias=True)
+        (3): CELU(alpha=0.1)
+        (4): Linear(in_features=128, out_features=96, bias=True)
+        (5): CELU(alpha=0.1)
+        (6): Linear(in_features=96, out_features=1, bias=True)
+      )
+      (F): Sequential(
+        (0): Linear(in_features=1008, out_features=160, bias=True)
+        (1): CELU(alpha=0.1)
+        (2): Linear(in_features=160, out_features=128, bias=True)
+        (3): CELU(alpha=0.1)
+        (4): Linear(in_features=128, out_features=96, bias=True)
+        (5): CELU(alpha=0.1)
+        (6): Linear(in_features=96, out_features=1, bias=True)
+      )
+      (Cl): Sequential(
+        (0): Linear(in_features=1008, out_features=160, bias=True)
+        (1): CELU(alpha=0.1)
+        (2): Linear(in_features=160, out_features=128, bias=True)
+        (3): CELU(alpha=0.1)
+        (4): Linear(in_features=128, out_features=96, bias=True)
+        (5): CELU(alpha=0.1)
+        (6): Linear(in_features=96, out_features=1, bias=True)
+      )
+    )
+  )
+  (energy_shifter): EnergyShifter()
+  (species_to_tensor): ChemicalSymbolsToInts()
+  (species_converter): SpeciesConverter()
+  (_dummy_model): ANIModel(
+    (0): Sequential(
+      (0): Identity()
+    )
+  )
+  (_dummy_ensemble): Ensemble(
+    (0): ANIModel(
+      (0): Sequential(
+        (0): Identity()
+      )
+    )
+  )
+)$
+
+ANIdr
+$BuiltinModelPairInteractions(
+  (aev_computer): AEVComputer(
+    (angular_terms): StandardAngular(
+      (cutoff_fn): CutoffSmooth()
+    )
+    (radial_terms): StandardRadial(
+      (cutoff_fn): CutoffSmooth()
+    )
+    (neighborlist): FullPairwise()
+  )
+  (neural_networks): Ensemble(
+    (0-6): 7 x ANIModel(
+      (H): Sequential(
+        (0): Linear(in_features=1008, out_features=256, bias=False)
+        (1): GELU(approximate='none')
+        (2): Linear(in_features=256, out_features=192, bias=False)
+        (3): GELU(approximate='none')
+        (4): Linear(in_features=192, out_features=160, bias=False)
+        (5): GELU(approximate='none')
+        (6): Linear(in_features=160, out_features=1, bias=False)
+      )
+      (C): Sequential(
+        (0): Linear(in_features=1008, out_features=256, bias=False)
+        (1): GELU(approximate='none')
+        (2): Linear(in_features=256, out_features=192, bias=False)
+        (3): GELU(approximate='none')
+        (4): Linear(in_features=192, out_features=160, bias=False)
+        (5): GELU(approximate='none')
+        (6): Linear(in_features=160, out_features=1, bias=False)
+      )
+      (N): Sequential(
+        (0): Linear(in_features=1008, out_features=192, bias=False)
+        (1): GELU(approximate='none')
+        (2): Linear(in_features=192, out_features=160, bias=False)
+        (3): GELU(approximate='none')
+        (4): Linear(in_features=160, out_features=128, bias=False)
+        (5): GELU(approximate='none')
+        (6): Linear(in_features=128, out_features=1, bias=False)
+      )
+      (O): Sequential(
+        (0): Linear(in_features=1008, out_features=192, bias=False)
+        (1): GELU(approximate='none')
+        (2): Linear(in_features=192, out_features=160, bias=False)
+        (3): GELU(approximate='none')
+        (4): Linear(in_features=160, out_features=128, bias=False)
+        (5): GELU(approximate='none')
+        (6): Linear(in_features=128, out_features=1, bias=False)
+      )
+      (S): Sequential(
+        (0): Linear(in_features=1008, out_features=160, bias=False)
+        (1): GELU(approximate='none')
+        (2): Linear(in_features=160, out_features=128, bias=False)
+        (3): GELU(approximate='none')
+        (4): Linear(in_features=128, out_features=96, bias=False)
+        (5): GELU(approximate='none')
+        (6): Linear(in_features=96, out_features=1, bias=False)
+      )
+      (F): Sequential(
+        (0): Linear(in_features=1008, out_features=160, bias=False)
+        (1): GELU(approximate='none')
+        (2): Linear(in_features=160, out_features=128, bias=False)
+        (3): GELU(approximate='none')
+        (4): Linear(in_features=128, out_features=96, bias=False)
+        (5): GELU(approximate='none')
+        (6): Linear(in_features=96, out_features=1, bias=False)
+      )
+      (Cl): Sequential(
+        (0): Linear(in_features=1008, out_features=160, bias=False)
+        (1): GELU(approximate='none')
+        (2): Linear(in_features=160, out_features=128, bias=False)
+        (3): GELU(approximate='none')
+        (4): Linear(in_features=128, out_features=96, bias=False)
+        (5): GELU(approximate='none')
+        (6): Linear(in_features=96, out_features=1, bias=False)
+      )
+    )
+  )
+  (energy_shifter): EnergyShifter()
+  (species_to_tensor): ChemicalSymbolsToInts()
+  (species_converter): SpeciesConverter()
+  (_dummy_model): ANIModel(
+    (0): Sequential(
+      (0): Identity()
+    )
+  )
+  (_dummy_ensemble): Ensemble(
+    (0): ANIModel(
+      (0): Sequential(
+        (0): Identity()
+      )
+    )
+  )
+  (potentials): ModuleList(
+    (0): TwoBodyDispersionD3(
+      (cutoff_fn): CutoffSmooth()
+      (_damp_fn_6): BJDamp()
+      (_damp_fn_8): BJDamp()
+    )
+    (1): RepulsionXTB(
+      (cutoff_fn): CutoffSmooth()
+    )
+    (2): AEVPotential(
+      (aev_computer): AEVComputer(
+        (angular_terms): StandardAngular(
+          (cutoff_fn): CutoffSmooth()
+        )
+        (radial_terms): StandardRadial(
+          (cutoff_fn): CutoffSmooth()
+        )
+        (neighborlist): FullPairwise()
+      )
+      (neural_networks): Ensemble(
+        (0-6): 7 x ANIModel(
+          (H): Sequential(
+            (0): Linear(in_features=1008, out_features=256, bias=False)
+            (1): GELU(approximate='none')
+            (2): Linear(in_features=256, out_features=192, bias=False)
+            (3): GELU(approximate='none')
+            (4): Linear(in_features=192, out_features=160, bias=False)
+            (5): GELU(approximate='none')
+            (6): Linear(in_features=160, out_features=1, bias=False)
+          )
+          (C): Sequential(
+            (0): Linear(in_features=1008, out_features=256, bias=False)
+            (1): GELU(approximate='none')
+            (2): Linear(in_features=256, out_features=192, bias=False)
+            (3): GELU(approximate='none')
+            (4): Linear(in_features=192, out_features=160, bias=False)
+            (5): GELU(approximate='none')
+            (6): Linear(in_features=160, out_features=1, bias=False)
+          )
+          (N): Sequential(
+            (0): Linear(in_features=1008, out_features=192, bias=False)
+            (1): GELU(approximate='none')
+            (2): Linear(in_features=192, out_features=160, bias=False)
+            (3): GELU(approximate='none')
+            (4): Linear(in_features=160, out_features=128, bias=False)
+            (5): GELU(approximate='none')
+            (6): Linear(in_features=128, out_features=1, bias=False)
+          )
+          (O): Sequential(
+            (0): Linear(in_features=1008, out_features=192, bias=False)
+            (1): GELU(approximate='none')
+            (2): Linear(in_features=192, out_features=160, bias=False)
+            (3): GELU(approximate='none')
+            (4): Linear(in_features=160, out_features=128, bias=False)
+            (5): GELU(approximate='none')
+            (6): Linear(in_features=128, out_features=1, bias=False)
+          )
+          (S): Sequential(
+            (0): Linear(in_features=1008, out_features=160, bias=False)
+            (1): GELU(approximate='none')
+            (2): Linear(in_features=160, out_features=128, bias=False)
+            (3): GELU(approximate='none')
+            (4): Linear(in_features=128, out_features=96, bias=False)
+            (5): GELU(approximate='none')
+            (6): Linear(in_features=96, out_features=1, bias=False)
+          )
+          (F): Sequential(
+            (0): Linear(in_features=1008, out_features=160, bias=False)
+            (1): GELU(approximate='none')
+            (2): Linear(in_features=160, out_features=128, bias=False)
+            (3): GELU(approximate='none')
+            (4): Linear(in_features=128, out_features=96, bias=False)
+            (5): GELU(approximate='none')
+            (6): Linear(in_features=96, out_features=1, bias=False)
+          )
+          (Cl): Sequential(
+            (0): Linear(in_features=1008, out_features=160, bias=False)
+            (1): GELU(approximate='none')
+            (2): Linear(in_features=160, out_features=128, bias=False)
+            (3): GELU(approximate='none')
+            (4): Linear(in_features=128, out_features=96, bias=False)
+            (5): GELU(approximate='none')
+            (6): Linear(in_features=96, out_features=1, bias=False)
+          )
+        )
+      )
+    )
+  )
+)$
+
+
+
+\chapter{Description of AEV parameters}
+
+Appendix E in Richard's dissertation could be a useful reference, but double check with GitHub for updated values.
+
+\chapter{Supplemental information}
+{\bf Paragraph headings.} There is no official fourth level heading. Do not use the Paragraph heading feature in LaTeX, simply apply the bold characteristic to the first few words of a paragraph followed by a colon or period.
+
+Please note that if you are adding a table or figure that takes up a whole page, you must have some text underneath your appendix title before using the next page.
+
+\begin{table}[h]
+\caption[Appendix table]{Additionally, the rules regarding italics and bolding does not apply to appendices. You can do whatever you'd like here mostly.}
+%\begin{center}
+\begin{tabularx}{\textwidth}{XXXX}\hline
+\textbf{Some}    & \textbf{Data}  & \textbf{Goes}  & \textbf{Here}\\\hline
+Some    & Data  & Goes  & Here\\
+Some    & Data  & Goes  & Here\\
+Some    & Data  & Goes  & Here\\\hline
+\end{tabularx}
+%\end{center}
+
+\end{table}

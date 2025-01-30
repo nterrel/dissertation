@@ -1,0 +1,42 @@
+\chapter{Uncertainty in atomic force predictions}
+
+
+Optimal ensembling averaging of neural networks: \cite{optimal_ensemble_averaging_naftaly}\\
+Ensemble deep learning: a review: \cite{ensemble_deep_learning_review_ganaie}\\
+Addressing uncertainty in atomistic machine learning: \cite{uncertainty_atomistic_ml_peterson}\\
+Quality of uncertainty estimates from neural network potential ensembles: \cite{uncertainty_of_nnp_ensembles_kahle}\\
+Uncertainty quantification in molecular simulations with dropout neural network potentials: \cite{uncertainty_quantification_dropout_wen}\\
+Explainable uncertainty quantifications for deep learning-based molecular property prediction: \cite{uncertainty_quantification_yang}\\
+Evaluating scalable uncertainty estimation methods for deep learning-based molecular property prediction : \cite{scalable_uncertainty_scalia}\\
+Simple and scalable predictive uncertainty estimation using deep ensembles: \cite{scalable_uncertainty_lakshminarayanan}\\
+
+
+
+\section{Potential solution}
+Looking for some atomistic value to use as a metric for molecular energy prediction, without actually knowing the ground truth to compare that prediction to. 
+
+Atomic energies were a wash, there seems to be no way to reduce the predictive uncertainty of these values without making the "desired" prediction of molecular energy a higher-error prediction. 
+
+We need something that is supported by \textit{ab initio} theory, which our networks can predict in a streamlined way in order to estimate the uncertainty of predictions at an atomistic level. There is only one quantity which exists for every atom: forces. (Could talk about dipoles here, and possibly mention how dipoles are sometimes non-existent, but the forces acting upon atoms usually aren't -- at most they are such a small value that they're considered zero -- but we don't really explore global equilibrium with MD so this shouldn't be an issue).
+
+\subsection{Forces}
+
+\subsection{Force magnitudes}
+
+\section{Analyzing the Uncertainty of Force Predictions}
+
+\subsection{Atom isolator}
+\subsubsection{Capping atoms}
+
+Molecular representations in AI-driven drug discovery (a review): \cite{mol_reps_in_AI_drug_discovery_david}\\
+SMILES and SMARTS papers: \cite{SMILES_pair_encoding_li, mol_patterns_SMARTS_schmidt, automated_fragment_gen_smiles_bilsland}\\
+Protein fragmentation with neural networks: \cite{protein_ff_fragmentation_nn_wang}\\
+Escaping atom types in force fields using direct chemical perception: \cite{direct_chem_perception_mobley} \\
+
+\subsection{Drawback: configurational sampling}
+
+GDB-13: \cite{gdb-13}
+GDB-17: \cite{gdb-17}
+ChEMBL: \cite{ChEMBL_gaulton}
+
+\section{Outlook}

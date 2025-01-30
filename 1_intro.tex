@@ -1,0 +1,130 @@
+\chapter{Introduction and background} 
+
+The landscape of computational chemistry has shifted greatly over the past decade. 
+The development of computational tools for chemical physics centers on approximating solutions to the Schr{\"o}dinger equation \cite{schrodinger_eqn}, whether through the development of electronic structure theory or, more indirectly, by employing classical mechanics to model molecular dynamics (MD) with force fields that have been tuned to experimental and high-accuracy quantum mechanical (QM) data.
+Prior to the emergence of machine-learned methods, advancements in the field were driven by specialized approaches to solving chemical equations \cite{trp_cage_roitberg, dft_qm_mm_roitberg}, 
+as well as relying on the exponential growth of hardware capabilities to simulate increasingly complex systems.
+Well-established \textit{ab initio} quantum chemical methods, such as density functional theory (DFT) \cite{dft_first_paper, perspective_fifty_years_DFT, wB97X}
+or coupled cluster methods \cite{coupled_cluster_first_paper, ccsd(t)_f12, dplno_ccsd(t)*},
+provide close agreement with experimental methods and have long been considered the gold standard for electronic structure calculations.
+Such methods carry a computational cost that scales steeply with system size---at $O(N^3)$ or greater scaling with \textit{N} electrons---limiting their utility in simulation of large systems or timescales relevant to many macroscopic observations. 
+
+Computational chemistry has the persistent challenge of balancing chemical accuracy and computational cost. 
+With few exceptions, approximations are necessary to determine a solution for any chemical system of interest. 
+There are a variety of options for computing molecular energies but, regardless of the sophistication of the approach taken in approximating a potential energy surface (PES), there is a trade-off between the level of detail of the system and the chemical accuracy of the determined solution.
+Efficient sampling techniques \cite{remd_adrian1, remd_adrian2, remd_umbrella} 
+and hardware acceleration \cite{gpu_dft, gpu_quantum_chem1, gpu_quantum_chem2} 
+played an essential role in mitigating some of these computational bottlenecks during the early 21st century.
+The 2010s saw great strides in parallel computing, namely incorporating graphics processing units (GPUs) in chemical simulations \cite{ gpu_accelerated_AMBER, gpu_accelerated_AMBER18}
+and \textit{ab initio} computations \cite{parallel_ab_initio_luehr}. 
+The  complexity of larger systems make full QM calculations computationally prohibitive, necessitating hybrid approaches such as QM/MM to balance accuracy and efficiency in order to model the behavior of, for example, protein-ligand interactions \cite{dft_qm_mm_roitberg} \authorRemark{[other citations]}.
+The need for a paradigm shift was clear: in order to address chemical problems ever-growing in complexity, new methodologies for efficiently computing results at quantum-levels of accuracy needed to be explored.
+The work detailed here exists at this intersection, with the aim of bridging the gap between the chemical accuracy of interatomic potential models and the computational efficiency required to extend their applicability to larger and more complex systems. 
+
+\section{The Modern Era of Computational Chemistry}
+The emergence of machine learning (ML) marked a transformative era of computating. 
+As highlighted by LeCun \cite{deep_learning_lecun}, deep learning models have excelled in many areas of data processing and, while the most popularly discussed applications are in image and natural language processing, learning models have excelled at pattern recognition and prediction in scientific data.
+By leveraging vast amounts of quantum mechanical data, learning models can be trained to approximate the solutions to the Schrödinger equation with remarkable accuracy, mimicking the results of high-level QM computations.
+Data-driven models have made it possible to predict molecular energies \cite{deep_tensor_NNs_schutt, prediction_errors_ml_lower_than_dft_faber, ml_atomization_energies_rupp}, 
+forces \cite{interatomic_ff_ML_glielmo, md_onthefly_ml_forces_li}, 
+and other properties \cite{PerSpect_ml, TensorMol}
+at speeds many orders of magnitude faster than computing such data with traditional QM methods at an approximate scale $O(N)$. 
+
+
+Approaches to \textit{ab initio} molecular dynamics (AIMD) involve computing the interactions between nuclei and electrons, which becomes numerically demanding as the system grows larger than a few atoms.
+Additionally, atomic motion must be modeled on very short timescale for dynamic calculations, leading to AIMD being an impractical approach for many chemical systems.
+On the other hand, MD with classical physics treat molecules with a sort of ball-and-spring representation, where atoms oscillate around equilibrium bonding distances with neighboring, bonded atoms.
+
+The use of machine-learned force fields (MLFFs) have unlocked new possibilities for MD simulations to explore complex chemical potential energy landscapes, which were previously inaccessible due to computational constraints.
+Further, MLFFs differ from classical force fields in their ability to model changes in bonding \cite{reactive_nnp_behler, yinuo_reactive_MLPs}, whereas traditional force field models parameterize bonds and explicitly connect atoms in the system topology. 
+
+  ($N_{atoms} \ge$)
+
+\authorRemark{
+\bf{GPT TEXT:}
+The primary strength of machine-learned potentials lies in their ability to balance chemical accuracy and computational efficiency. Traditional quantum mechanical methods involve solving the electronic structure problem for a system of interacting nuclei and electrons, a task that becomes exponentially more demanding as the size of the system increases. Machine learning circumvents this bottleneck by learning from precomputed data: models are trained on high-quality quantum mechanical calculations, capturing the underlying physics of molecular interactions in a computationally efficient framework \authorRemark{add sources for high-quality training data in ML potentials}.
+
+This approach has proven particularly advantageous for MD simulations. By replacing expensive quantum mechanical calculations with machine-learned potentials, researchers have been able to simulate large-scale systems for significantly longer timescales. For example, machine-learned potentials have been applied to study catalytic surfaces, protein-ligand interactions, and reaction dynamics in solution \authorRemark{add sources for applications of ML potentials in MD simulations}. These advances not only enhance the scope of computational chemistry but also provide critical insights into chemical phenomena that were previously out of reach.}
+
+
+
+There are a few important considerations when implementing a machine-learned interatomic model: atomic representation, model architecture, and the quality and availability of training data. 
+
+
+\subsection{Atomic representation}
+Start with something like: 
+In order to train learning models -- or use any 
+Behler-Parrinello: \cite{behler_parrinello}\\
+Behler atom-centered symmetry functions: \cite{atom_centered_symmetry_function_behler}\\
+
+\authorRemark{Among the earliest successes of machine learning in chemistry were the development of interatomic potentials capable of modeling the behavior of molecular systems. Early approaches such as the Behler-Parrinello neural network potential \authorRemark{add source for Behler-Parrinello} demonstrated that ML models could capture the complex, many-body interactions within chemical systems with high fidelity.}
+
+Efficient interatomic descriptors for accurate machine learning force fields of extended molecules: \cite{interatomic_descriptors_kabylda}\\
+
+[some examples from Yinuo defense, find references]
+Predefined descriptors: PIP-NN, HDNN (Behler), ANI, DeepMD, TensorMol 
+
+Learnable descriptors: SchNet, PhysNet, AIMNet-NSE, NequIP
+
+
+
+
+\subsection{Model architecture}
+
+\authorRemark{a diverse array of machine-learned potentials has been developed, each tailored to address specific challenges in chemical simulation. The unique flexibility of ML methods has also enabled the extension of these models to study diverse chemical environments, ranging from gas-phase reactions to condensed-phase systems}
+
+The seemingly limitless application of many types of model architecture have been explored in the literature:
+graph neural networks (GNN) \cite{gnn_property_prediction1, gnn_property_prediction2}, 
+Gaussian process regression models \cite{gaussian_process_regression1,gaussian_process_regression2}, 
+gradient-domain machine learning \cite{ml_energy_conserving_ff_chmiela}, 
+and deep artificial neural networks (ANN) \cite{pes_fitted_by_NN_handley, ab_initio_pes_using_ml_lu, ml_pes_jiang}. 
+
+Use NN-SVG to make figure of neural network: \cite{NN_SVG}
+
+\subsection{Data quality and availability}
+
+Talk about legolas here, how it is limited by data quality and availability: performing poorest on the atoms that belong to residues with sparse data to train on
+\\
+LEGOLAS: \cite{legolas}\\
+
+
+
+
+
+
+
+
+
+
+\section{The Artificial NeurAl networK engINe for Molecular Energies: ANI}
+
+ANI-1: \cite{ani-1}\\
+ANI-1 ds: \cite{ani-1_dataset}\\
+Less is more: \cite{ani-1x}\\
+ANI-1ccx: \cite{ani-1ccx}\\
+ANI-1x and 1ccx datasets: \cite{1x_1ccx_datasets}\\
+ANI-2x: \cite{ani-2x}\\
+TorchANI: \cite{torchani}\\
+Santi and Jonny paper: \cite{ml_mm_santi_y_jonny}\\
+ANI-1xnr: \cite{ani-1xnr}\\
+
+
+\authorRemark{
+
+At the forefront of these developments is the Anakin-Me (ANI) neural network potential family, which has redefined the capabilities of machine-learned potentials for molecular simulation. The ANI framework is built upon the concept of atomic environment vectors (AEVs), which encode the local chemical environment of each atom in a molecule in a rotationally and translationally invariant manner \authorRemark{add source for original ANI paper}. This innovative representation allows ANI potentials to generalize across diverse chemical spaces, enabling accurate predictions for systems that were not explicitly included in the training data.
+
+A key feature of ANI is its modularity. By employing separate neural networks for distinct atomic pairs (e.g., H-H, C-H, O-H), the framework captures the unique interactions between different types of atoms while maintaining a consistent overall model \authorRemark{add sources for pairwise potentials in ANI}. This design has proven particularly effective for applications involving organic molecules, where a wide range of bond types and chemical environments must be accurately represented.
+
+Throughout my PhD research, I have worked extensively on developing and applying ANI neural network potentials to address critical challenges in computational chemistry. This has included enhancing the accuracy and scalability of ANI models, as well as extending their applicability to reactive systems and complex chemical environments. One of the central goals of this work has been to push the boundaries of what is achievable with machine-learned potentials, exploring their potential for uncovering new chemical phenomena and enabling large-scale simulations.}
+
+\subsection{The Atomic Environment Vector}
+
+
+
+
+\subsection{ANI model architecture}
+
+
+Full network sizes in Appendix I
+
+
