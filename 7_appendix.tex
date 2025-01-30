@@ -3,284 +3,41 @@
 Give the shape and number of parameters of ANI networks (at least 1x, 1ccx, 2x, DR, and 1xnr since these are all being used or referenced in this dissertation. 
 
 Format this nicely:
-ANI-2x
-$BuiltinModel(
-  (aev_computer): AEVComputer(
-    (angular_terms): StandardAngular(
-      (cutoff_fn): CutoffCosine()
-    )
-    (radial_terms): StandardRadial(
-      (cutoff_fn): CutoffCosine()
-    )
-    (neighborlist): FullPairwise()
-  )
-  (neural_networks): Ensemble(
-    (0-7): 8 x ANIModel(
-      (H): Sequential(
-        (0): Linear(in_features=1008, out_features=256, bias=True)
-        (1): CELU(alpha=0.1)
-        (2): Linear(in_features=256, out_features=192, bias=True)
-        (3): CELU(alpha=0.1)
-        (4): Linear(in_features=192, out_features=160, bias=True)
-        (5): CELU(alpha=0.1)
-        (6): Linear(in_features=160, out_features=1, bias=True)
-      )
-      (C): Sequential(
-        (0): Linear(in_features=1008, out_features=224, bias=True)
-        (1): CELU(alpha=0.1)
-        (2): Linear(in_features=224, out_features=192, bias=True)
-        (3): CELU(alpha=0.1)
-        (4): Linear(in_features=192, out_features=160, bias=True)
-        (5): CELU(alpha=0.1)
-        (6): Linear(in_features=160, out_features=1, bias=True)
-      )
-      (N): Sequential(
-        (0): Linear(in_features=1008, out_features=192, bias=True)
-        (1): CELU(alpha=0.1)
-        (2): Linear(in_features=192, out_features=160, bias=True)
-        (3): CELU(alpha=0.1)
-        (4): Linear(in_features=160, out_features=128, bias=True)
-        (5): CELU(alpha=0.1)
-        (6): Linear(in_features=128, out_features=1, bias=True)
-      )
-      (O): Sequential(
-        (0): Linear(in_features=1008, out_features=192, bias=True)
-        (1): CELU(alpha=0.1)
-        (2): Linear(in_features=192, out_features=160, bias=True)
-        (3): CELU(alpha=0.1)
-        (4): Linear(in_features=160, out_features=128, bias=True)
-        (5): CELU(alpha=0.1)
-        (6): Linear(in_features=128, out_features=1, bias=True)
-      )
-      (S): Sequential(
-        (0): Linear(in_features=1008, out_features=160, bias=True)
-        (1): CELU(alpha=0.1)
-        (2): Linear(in_features=160, out_features=128, bias=True)
-        (3): CELU(alpha=0.1)
-        (4): Linear(in_features=128, out_features=96, bias=True)
-        (5): CELU(alpha=0.1)
-        (6): Linear(in_features=96, out_features=1, bias=True)
-      )
-      (F): Sequential(
-        (0): Linear(in_features=1008, out_features=160, bias=True)
-        (1): CELU(alpha=0.1)
-        (2): Linear(in_features=160, out_features=128, bias=True)
-        (3): CELU(alpha=0.1)
-        (4): Linear(in_features=128, out_features=96, bias=True)
-        (5): CELU(alpha=0.1)
-        (6): Linear(in_features=96, out_features=1, bias=True)
-      )
-      (Cl): Sequential(
-        (0): Linear(in_features=1008, out_features=160, bias=True)
-        (1): CELU(alpha=0.1)
-        (2): Linear(in_features=160, out_features=128, bias=True)
-        (3): CELU(alpha=0.1)
-        (4): Linear(in_features=128, out_features=96, bias=True)
-        (5): CELU(alpha=0.1)
-        (6): Linear(in_features=96, out_features=1, bias=True)
-      )
-    )
-  )
-  (energy_shifter): EnergyShifter()
-  (species_to_tensor): ChemicalSymbolsToInts()
-  (species_converter): SpeciesConverter()
-  (_dummy_model): ANIModel(
-    (0): Sequential(
-      (0): Identity()
-    )
-  )
-  (_dummy_ensemble): Ensemble(
-    (0): ANIModel(
-      (0): Sequential(
-        (0): Identity()
-      )
-    )
-  )
-)$
+ANI-2x: 8 ensembled models \\
+AEVComputer: outputs fixed-length vector encoding atomic environment \\
+StandardAngular, StandardRadial; CutoffCosine (for radial+angular): determine terms and AEV radius \\
+FullPairwise: neighbor list computation\\
+EnergyShifter: converts energies from near-zero values output by networks to the "physical range" of values for different atom types \\
+ChemicalSymbolsToInts, SpeciesConverter: helper functions to produce species tensor \\
+H Network shape: 1008 x 256 x 192 x 160 x 1 \\
+C Network shape: 1008 x 224 x 192 x 160 x 1 \\
+N Network shape: 1008 x 192 x 160 x 128 x 1 \\
+O Network shape: 1008 x 192 x 160 x 128 x 1 \\
+S Network shape: 1008 x 160 x 128 x 96 x 1 \\
+F Network shape: 1008 x 160 x 128 x 96 x 1 \\
+Cl Network shape: 1008 x 160 x 128 x 96 x 1 \\
 
-ANIdr
-$BuiltinModelPairInteractions(
-  (aev_computer): AEVComputer(
-    (angular_terms): StandardAngular(
-      (cutoff_fn): CutoffSmooth()
-    )
-    (radial_terms): StandardRadial(
-      (cutoff_fn): CutoffSmooth()
-    )
-    (neighborlist): FullPairwise()
-  )
-  (neural_networks): Ensemble(
-    (0-6): 7 x ANIModel(
-      (H): Sequential(
-        (0): Linear(in_features=1008, out_features=256, bias=False)
-        (1): GELU(approximate='none')
-        (2): Linear(in_features=256, out_features=192, bias=False)
-        (3): GELU(approximate='none')
-        (4): Linear(in_features=192, out_features=160, bias=False)
-        (5): GELU(approximate='none')
-        (6): Linear(in_features=160, out_features=1, bias=False)
-      )
-      (C): Sequential(
-        (0): Linear(in_features=1008, out_features=256, bias=False)
-        (1): GELU(approximate='none')
-        (2): Linear(in_features=256, out_features=192, bias=False)
-        (3): GELU(approximate='none')
-        (4): Linear(in_features=192, out_features=160, bias=False)
-        (5): GELU(approximate='none')
-        (6): Linear(in_features=160, out_features=1, bias=False)
-      )
-      (N): Sequential(
-        (0): Linear(in_features=1008, out_features=192, bias=False)
-        (1): GELU(approximate='none')
-        (2): Linear(in_features=192, out_features=160, bias=False)
-        (3): GELU(approximate='none')
-        (4): Linear(in_features=160, out_features=128, bias=False)
-        (5): GELU(approximate='none')
-        (6): Linear(in_features=128, out_features=1, bias=False)
-      )
-      (O): Sequential(
-        (0): Linear(in_features=1008, out_features=192, bias=False)
-        (1): GELU(approximate='none')
-        (2): Linear(in_features=192, out_features=160, bias=False)
-        (3): GELU(approximate='none')
-        (4): Linear(in_features=160, out_features=128, bias=False)
-        (5): GELU(approximate='none')
-        (6): Linear(in_features=128, out_features=1, bias=False)
-      )
-      (S): Sequential(
-        (0): Linear(in_features=1008, out_features=160, bias=False)
-        (1): GELU(approximate='none')
-        (2): Linear(in_features=160, out_features=128, bias=False)
-        (3): GELU(approximate='none')
-        (4): Linear(in_features=128, out_features=96, bias=False)
-        (5): GELU(approximate='none')
-        (6): Linear(in_features=96, out_features=1, bias=False)
-      )
-      (F): Sequential(
-        (0): Linear(in_features=1008, out_features=160, bias=False)
-        (1): GELU(approximate='none')
-        (2): Linear(in_features=160, out_features=128, bias=False)
-        (3): GELU(approximate='none')
-        (4): Linear(in_features=128, out_features=96, bias=False)
-        (5): GELU(approximate='none')
-        (6): Linear(in_features=96, out_features=1, bias=False)
-      )
-      (Cl): Sequential(
-        (0): Linear(in_features=1008, out_features=160, bias=False)
-        (1): GELU(approximate='none')
-        (2): Linear(in_features=160, out_features=128, bias=False)
-        (3): GELU(approximate='none')
-        (4): Linear(in_features=128, out_features=96, bias=False)
-        (5): GELU(approximate='none')
-        (6): Linear(in_features=96, out_features=1, bias=False)
-      )
-    )
-  )
-  (energy_shifter): EnergyShifter()
-  (species_to_tensor): ChemicalSymbolsToInts()
-  (species_converter): SpeciesConverter()
-  (_dummy_model): ANIModel(
-    (0): Sequential(
-      (0): Identity()
-    )
-  )
-  (_dummy_ensemble): Ensemble(
-    (0): ANIModel(
-      (0): Sequential(
-        (0): Identity()
-      )
-    )
-  )
-  (potentials): ModuleList(
-    (0): TwoBodyDispersionD3(
-      (cutoff_fn): CutoffSmooth()
-      (_damp_fn_6): BJDamp()
-      (_damp_fn_8): BJDamp()
-    )
-    (1): RepulsionXTB(
-      (cutoff_fn): CutoffSmooth()
-    )
-    (2): AEVPotential(
-      (aev_computer): AEVComputer(
-        (angular_terms): StandardAngular(
-          (cutoff_fn): CutoffSmooth()
-        )
-        (radial_terms): StandardRadial(
-          (cutoff_fn): CutoffSmooth()
-        )
-        (neighborlist): FullPairwise()
-      )
-      (neural_networks): Ensemble(
-        (0-6): 7 x ANIModel(
-          (H): Sequential(
-            (0): Linear(in_features=1008, out_features=256, bias=False)
-            (1): GELU(approximate='none')
-            (2): Linear(in_features=256, out_features=192, bias=False)
-            (3): GELU(approximate='none')
-            (4): Linear(in_features=192, out_features=160, bias=False)
-            (5): GELU(approximate='none')
-            (6): Linear(in_features=160, out_features=1, bias=False)
-          )
-          (C): Sequential(
-            (0): Linear(in_features=1008, out_features=256, bias=False)
-            (1): GELU(approximate='none')
-            (2): Linear(in_features=256, out_features=192, bias=False)
-            (3): GELU(approximate='none')
-            (4): Linear(in_features=192, out_features=160, bias=False)
-            (5): GELU(approximate='none')
-            (6): Linear(in_features=160, out_features=1, bias=False)
-          )
-          (N): Sequential(
-            (0): Linear(in_features=1008, out_features=192, bias=False)
-            (1): GELU(approximate='none')
-            (2): Linear(in_features=192, out_features=160, bias=False)
-            (3): GELU(approximate='none')
-            (4): Linear(in_features=160, out_features=128, bias=False)
-            (5): GELU(approximate='none')
-            (6): Linear(in_features=128, out_features=1, bias=False)
-          )
-          (O): Sequential(
-            (0): Linear(in_features=1008, out_features=192, bias=False)
-            (1): GELU(approximate='none')
-            (2): Linear(in_features=192, out_features=160, bias=False)
-            (3): GELU(approximate='none')
-            (4): Linear(in_features=160, out_features=128, bias=False)
-            (5): GELU(approximate='none')
-            (6): Linear(in_features=128, out_features=1, bias=False)
-          )
-          (S): Sequential(
-            (0): Linear(in_features=1008, out_features=160, bias=False)
-            (1): GELU(approximate='none')
-            (2): Linear(in_features=160, out_features=128, bias=False)
-            (3): GELU(approximate='none')
-            (4): Linear(in_features=128, out_features=96, bias=False)
-            (5): GELU(approximate='none')
-            (6): Linear(in_features=96, out_features=1, bias=False)
-          )
-          (F): Sequential(
-            (0): Linear(in_features=1008, out_features=160, bias=False)
-            (1): GELU(approximate='none')
-            (2): Linear(in_features=160, out_features=128, bias=False)
-            (3): GELU(approximate='none')
-            (4): Linear(in_features=128, out_features=96, bias=False)
-            (5): GELU(approximate='none')
-            (6): Linear(in_features=96, out_features=1, bias=False)
-          )
-          (Cl): Sequential(
-            (0): Linear(in_features=1008, out_features=160, bias=False)
-            (1): GELU(approximate='none')
-            (2): Linear(in_features=160, out_features=128, bias=False)
-            (3): GELU(approximate='none')
-            (4): Linear(in_features=128, out_features=96, bias=False)
-            (5): GELU(approximate='none')
-            (6): Linear(in_features=96, out_features=1, bias=False)
-          )
-        )
-      )
-    )
-  )
-)$
-
+ANIdr: 7 ensembled models \\
+Pair interactions: AEVComputer (FullPairwise: [StandardAngular, CutoffSmooth]; [StandardRadial, CutoffSmooth]) \\
+EnergyShifter, ChemicalSymbolsToInts, SpeciesConverter same as 2x \\
+Linear layers connected with GELU activation functions: \\
+H Network shape: 1008 x 256 x 192 x 160 x 1 \\
+C Network shape: 1008 x 224 x 192 x 160 x 1 \\
+N Network shape: 1008 x 192 x 160 x 128 x 1 \\
+O Network shape: 1008 x 192 x 160 x 128 x 1 \\
+S Network shape: 1008 x 160 x 128 x 96 x 1 \\
+F Network shape: 1008 x 160 x 128 x 96 x 1 \\
+Cl Network shape: 1008 x 160 x 128 x 96 x 1 \\
+TwoBodyDispersionD3 (CutoffSmooth, BJDamp) \\
+RepulsionXTB (CutoffSmooth) \\
+Additional network architecture for repulsion, linear layers connected with GELU activation functions: \\
+H Network shape: 1008 x 256 x 192 x 160 x 1 \\
+C Network shape: 1008 x 224 x 192 x 160 x 1 \\
+N Network shape: 1008 x 192 x 160 x 128 x 1 \\
+O Network shape: 1008 x 192 x 160 x 128 x 1 \\
+S Network shape: 1008 x 160 x 128 x 96 x 1 \\
+F Network shape: 1008 x 160 x 128 x 96 x 1 \\
+Cl Network shape: 1008 x 160 x 128 x 96 x 1 \\
 
 
 \chapter{Description of AEV parameters}
