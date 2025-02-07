@@ -7,14 +7,21 @@
 %\usepackage{CustomMacros}%  This is a user macro/style file.
 
 \usepackage{tikz}%       tikz is used by almost everyone, but certainly by me for this.
+\newcommand{\angstrom}{\hspace{-0.3em}%
+    \begin{tikzpicture}[baseline=(A.base)]
+        \node (A) at (0,0) {A};
+        \node at ([yshift=-0.475ex]A.north) {\scalebox{0.65}{$\circ$}};
+    \end{tikzpicture}%
+    \hspace{-0.3em}
+}
+% The above command is necessary because Angstrom Å does not render properly
 \usepackage{pgfplots}%   pgfplots is tikz but better.
-
 \usepackage{algpseudocode}
-
 \usepackage{booktabs} %This package can be used to make heavier/lighter \hline commands with \toprule, \midrule, \bottomrule
 \usepackage{tabularray}
 \usepackage{graphicx}
 
+\pgfplotsset{compat=1.18} % This is a suggestion by overleaf, but idk what it does.
 
 \usepackage{scrextend}
 \deffootnote{1.5em}{0em}{\thefootnotemark\quad}

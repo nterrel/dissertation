@@ -105,7 +105,27 @@ URL = {https://doi.org/10.1021/acs.jctc.0c00121},
 eprint = {https://doi.org/10.1021/acs.jctc.0c00121}
 }
 
-@article{ml_mm_santi_y_jonny,
+@misc{2x_dataset,
+  author       = {Huddleston, Kate and Zubatyuk, Roman and Smith, Justin and Roitberg, Adrian and Isayev, Olexandr and Pickering, Ignacio and Devereux, Christian and Barros, Kipton},
+  title        = {ANI-2x Release},
+  month        = nov,
+  year         = 2023,
+  publisher    = {Zenodo},
+  doi          = {10.5281/zenodo.10108942},
+  url          = {https://doi.org/10.5281/zenodo.10108942},
+}
+
+@misc{comp6v2,
+ author = {Huddleston, Kate and Zubatyuk, Roman and Smith, Justin and Roitberg, Adrian and Isayev, Olexandr and Pickering, Ignacio and Devereux, Christian and Barros, Kipton},
+  title = {COMP6v2 Release},
+  month = nov,
+  year = 2023,
+  publisher = {Zenodo},
+  doi = {10.5281/zenodo.10126157},
+  url = {https://doi.org/10.5281/zenodo.10126157},
+}
+
+@article{ml_mm_santi_y_jonny1,
 title={Assessment of Embedding Schemes in a Hybrid Machine Learning/Classical Potentials (ML/MM) Approach},
 author={Grassano, Juan S. and Pickering, Ignacio and Roitberg, Adrian E. and Gonz{\'a}lez Lebrero, Mariano C. and Estrin, Dario A. and Semelak, Jonathan A.},
 journal={Journal of Chemical Information and Modeling},
@@ -119,6 +139,14 @@ pages={4047-4058},
 issn={1549-9596},
 doi={10.1021/acs.jcim.4c00478},
 url={https://doi.org/10.1021/acs.jcim.4c00478}
+}
+
+@article{ml_mm_santi_y_jonny2, 
+author={Semelak, Jonathan A. and Ignacio, Pickering and  Huddleston, Kate K. and Olmos, Justo and Grassano, Juan S and Clemente, Camila and Drusin, Salvador I. and Marti, Marcelo and Gonzalez Lebrero, Mariano C. and Roitberg, Adrian E. and et al.}, 
+title={Advancing Multiscale Molecular Modeling with Machine Learning-Derived Electrostatics}, 
+DOI={10.26434/chemrxiv-2024-m9xgc-v2}, 
+journal={ChemRxiv}, 
+year={2024}
 }
 
 @article{ani-1xnr, 
@@ -147,7 +175,6 @@ year={2023}
    keywords = "machine learning",
    keywords = "computational chemistry",
    keywords = "potential energy surface",
-   abstract = "In the past two decades, machine learning potentials (MLPs) have driven significant developments in chemical, biological, and material sciences. The construction and training of MLPs enable fast and accurate simulations and analysis of thermodynamic and kinetic properties. This review focuses on the application of MLPs to reaction systems with consideration of bond breaking and formation. We review the development of MLP models, primarily with neural network and kernel-based algorithms, and recent applications of reactive MLPs (RMLPs) to systems at different scales. We show how RMLPs are constructed, how they speed up the calculation of reactive dynamics, and how they facilitate the study of reaction trajectories, reaction rates, free energy calculations, and many other calculations. Different data sampling strategies applied in building RMLPs are also discussed with a focus on how to collect structures for rare events and how to further improve their performance with active learning.",
   }
 
 @article{legolas, 
@@ -156,6 +183,78 @@ title={LEGOLAS: a Machine Learning method for rapid and accurate predictions of 
 DOI={10.26434/chemrxiv-2025-w2qn8}, 
 journal={ChemRxiv}, 
 year={2025}} 
+
+@Article{shiftx,
+author={Neal, Stephen
+and Nip, Alex M.
+and Zhang, Haiyan
+and Wishart, David S.},
+title={Rapid and accurate calculation of protein 1H, 13C and 15N chemical shifts},
+journal={Journal of Biomolecular NMR},
+year={2003},
+month={Jul},
+day={01},
+volume={26},
+number={3},
+pages={215-240},
+issn={1573-5001},
+doi={10.1023/A:1023812930288},
+url={https://doi.org/10.1023/A:1023812930288}
+}
+
+@Article{qm9,
+author={Ramakrishnan, Raghunathan and Dral, Pavlo O. and Rupp, Matthias and von Lilienfeld, O. Anatole},
+title={Quantum chemistry structures and properties of 134 kilo molecules},
+journal={Scientific Data},
+year={2014},
+month={Aug},
+day={05},
+volume={1},
+number={1},
+pages={140022},
+issn={2052-4463},
+doi={10.1038/sdata.2014.22},
+url={https://doi.org/10.1038/sdata.2014.22}
+}
+
+@Article{qm40,
+author={Madushanka, Ayesh and Moura, Renaldo T. and Kraka, Elfi},
+title={QM40, Realistic Quantum Mechanical Dataset for Machine Learning in Molecular Science},
+journal={Scientific Data},
+year={2024},
+month={Dec},
+day={18},
+volume={11},
+number={1},
+pages={1376},
+issn={2052-4463},
+doi={10.1038/s41597-024-04206-y},
+url={https://doi.org/10.1038/s41597-024-04206-y}
+}
+
+@misc{pytorch,
+      title={PyTorch: An Imperative Style, High-Performance Deep Learning Library}, 
+      author={Adam Paszke and Sam Gross and Francisco Massa and Adam Lerer and James Bradbury and Gregory Chanan and Trevor Killeen and Zeming Lin and Natalia Gimelshein and Luca Antiga and Alban Desmaison and Andreas Köpf and Edward Yang and Zach DeVito and Martin Raison and Alykhan Tejani and Sasank Chilamkurthy and Benoit Steiner and Lu Fang and Junjie Bai and Soumith Chintala},
+      year={2019},
+      eprint={1912.01703},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/1912.01703}, 
+}
+
+@article{ml_mm_galvelis,
+  title    = "{NNP/MM}: Accelerating molecular dynamics simulations with
+              machine learning potentials and molecular mechanics",
+  author   = "Galvelis, Raimondas and Varela-Rial, Alejandro and Doerr, Stefan and Fino, Roberto and Eastman, Peter and Markland, Thomas E and Chodera, John D and De Fabritiis, Gianni",
+  journal  = "J. Chem. Inf. Model.",
+  volume   =  63,
+  number   =  18,
+  pages    = "5701--5708",
+  month    =  sep,
+  year     =  2023,
+  language = "en"
+}
+
 
 @article{behler_parrinello,
   title = {Generalized Neural-Network Representation of High-Dimensional Potential-Energy Surfaces},
@@ -332,6 +431,51 @@ url={https://doi.org/10.1021/jp9105585}
     eprint = {https://pubs.aip.org/aip/jcp/article-pdf/doi/10.1063/1.2834918/15411250/084106\_1\_online.pdf},
 }
 
+@Article{6-31g*,
+author={Hariharan, P. C.
+and Pople, J. A.},
+title={The influence of polarization functions on molecular orbital hydrogenation energies},
+journal={Theoretica chimica acta},
+year={1973},
+month={Sep},
+day={01},
+volume={28},
+number={3},
+pages={213-222},
+issn={1432-2234},
+doi={10.1007/BF00533485},
+url={https://doi.org/10.1007/BF00533485}
+}
+
+@article{1ccx_ccsd(t),
+author = {Hobza, Pavel and Šponer, Jiří},
+title = {Toward True DNA Base-Stacking Energies: MP2, CCSD(T), and Complete Basis Set Calculations},
+journal = {Journal of the American Chemical Society},
+volume = {124},
+number = {39},
+pages = {11802-11808},
+year = {2002},
+doi = {10.1021/ja026759n},
+note ={PMID: 12296748},
+URL = {https://doi.org/10.1021/ja026759n},
+eprint = {https://doi.org/10.1021/ja026759n}
+}
+
+@article{1ccx_basis,
+    author = {Kendall, Rick A. and Dunning, Thom H., Jr. and Harrison, Robert J.},
+    title = {Electron affinities of the first‐row atoms revisited. Systematic basis sets and wave functions},
+    journal = {The Journal of Chemical Physics},
+    volume = {96},
+    number = {9},
+    pages = {6796-6806},
+    year = {1992},
+    month = {05},
+    issn = {0021-9606},
+    doi = {10.1063/1.462569},
+    url = {https://doi.org/10.1063/1.462569},
+    eprint = {https://pubs.aip.org/aip/jcp/article-pdf/96/9/6796/18998924/6796\_1\_online.pdf},
+}
+
 @article{coupled_cluster_first_paper,
     title = {On the Correlation Problem in Atomic and Molecular Systems. Calculation of Wavefunction Components in Ursell‐Type Expansion Using Quantum‐Field Theoretical Methods},
     author = {Čížek, Jiří},
@@ -375,6 +519,20 @@ url={https://doi.org/10.1021/jp9105585}
     doi = {10.1063/1.2817618},
     url = {https://doi.org/10.1063/1.2817618},
     eprint = {https://pubs.aip.org/aip/jcp/article-pdf/doi/10.1063/1.2817618/13499829/221106\_1\_online.pdf},
+}
+
+@article{correcting_HF_atom_centered_potentials,
+author = {Prasad, Viki Kumar and Otero-de-la-Roza, Alberto and DiLabio, Gino A.},
+title = {Fast and Accurate Quantum Mechanical Modeling of Large Molecular Systems Using Small Basis Set Hartree–Fock Methods Corrected with Atom-Centered Potentials},
+journal = {Journal of Chemical Theory and Computation},
+volume = {18},
+number = {4},
+pages = {2208-2232},
+year = {2022},
+doi = {10.1021/acs.jctc.1c01128},
+note ={PMID: 35313106},
+URL = {https://doi.org/10.1021/acs.jctc.1c01128},
+eprint = {https://doi.org/10.1021/acs.jctc.1c01128}
 }
 
 @article{mol_reps_in_AI_drug_discovery_david,
@@ -545,6 +703,35 @@ doi={10.1021/acs.jcim.0c01127},
 url={https://doi.org/10.1021/acs.jcim.0c01127}
 }
 
+@article{gdb-11-1,
+author = {Fink, Tobias and Bruggesser, Heinz and Reymond, Jean-Louis},
+title = {Virtual Exploration of the Small-Molecule Chemical Universe below 160 Daltons},
+journal = {Angewandte Chemie International Edition},
+volume = {44},
+number = {10},
+pages = {1504-1508},
+keywords = {chemoinformatics, combinatorial chemistry, computer chemistry, drug design, molecular diversity},
+doi = {https://doi.org/10.1002/anie.200462457},
+url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/anie.200462457},
+eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/anie.200462457},
+year = {2005}
+}
+
+
+@article{gdb-11-2,
+author = {Fink, Tobias and Reymond, Jean-Louis},
+title = {Virtual Exploration of the Chemical Universe up to 11 Atoms of C, N, O, F: Assembly of 26.4 Million Structures (110.9 Million Stereoisomers) and Analysis for New Ring Systems, Stereochemistry, Physicochemical Properties, Compound Classes, and Drug Discovery},
+journal = {Journal of Chemical Information and Modeling},
+volume = {47},
+number = {2},
+pages = {342-353},
+year = {2007},
+doi = {10.1021/ci600423u},
+note ={PMID: 17260980},
+URL = {https://doi.org/10.1021/ci600423u},
+eprint = {https://doi.org/10.1021/ci600423u}
+}
+
 @article{gdb-13,
 author={Blum, Lorenz C. and Reymond, Jean-Louis},
 title={970 Million Druglike Small Molecules for Virtual Screening in the Chemical Universe Database GDB-13},
@@ -671,11 +858,23 @@ doi={10.1021/ct400366h},
 url={https://doi.org/10.1021/ct400366h}
 }
 
-
+@article{QMtoMM_thermo_cycle,
+author = {Giese, Timothy
+J. and York, Darrin M.},
+title = {Development of a Robust Indirect Approach for MM → QM Free Energy Calculations That Combines Force-Matched Reference Potential and Bennett’s Acceptance Ratio Methods},
+journal = {Journal of Chemical Theory and Computation},
+volume = {15},
+number = {10},
+pages = {5543-5562},
+year = {2019},
+doi = {10.1021/acs.jctc.9b00401},
+note ={PMID: 31507179},
+URL = {https://doi.org/10.1021/acs.jctc.9b00401},
+eprint = {https://doi.org/10.1021/acs.jctc.9b00401}
+}
 
 @article{remd_adrian3,
-  title     = "Constant pH replica exchange molecular dynamics in biomolecules
-               using a discrete protonation model",
+  title     = "Constant pH replica exchange molecular dynamics in biomolecules using a discrete protonation model",
   author    = "Meng, Yilin and Roitberg, Adrian E",
   journal   = "J. Chem. Theory Comput.",
   publisher = "American Chemical Society (ACS)",
@@ -873,6 +1072,20 @@ doi ="10.1039/C7SC04934J",
 url ="http://dx.doi.org/10.1039/C7SC04934J"
 }
 
+@article{ml_mm_largescale,
+author = {B{\"o}selt, Lennard and Th{\"u}rlemann, Moritz and Riniker, Sereina},
+title = {Machine Learning in QM/MM Molecular Dynamics Simulations of Condensed-Phase Systems},
+journal = {Journal of Chemical Theory and Computation},
+volume = {17},
+number = {5},
+pages = {2641-2658},
+year = {2021},
+doi = {10.1021/acs.jctc.0c01112},
+note ={PMID: 33818085},
+URL = {https://doi.org/10.1021/acs.jctc.0c01112},
+eprint = {https://doi.org/10.1021/acs.jctc.0c01112}
+}
+
 @article{reactive_nnp_behler,
 title = {First Principles Neural Network Potentials for Reactive Simulations of Large Molecular and Condensed Systems},
 author = {Behler, Jörg},
@@ -1026,6 +1239,241 @@ issn={2041-1723},
 doi={10.1038/s41467-023-39214-w},
 url={https://doi.org/10.1038/s41467-023-39214-w}
 }
+
+@article{PIP_NN,
+    author = {Jiang, Bin and Guo, Hua},
+    title = {Permutation invariant polynomial neural network approach to fitting potential energy surfaces. III. Molecule-surface interactions},
+    journal = {The Journal of Chemical Physics},
+    volume = {141},
+    number = {3},
+    pages = {034109},
+    year = {2014},
+    month = {07},
+    issn = {0021-9606},
+    doi = {10.1063/1.4887363},
+    url = {https://doi.org/10.1063/1.4887363},
+    eprint = {https://pubs.aip.org/aip/jcp/article-pdf/doi/10.1063/1.4887363/15479814/034109\_1\_online.pdf},
+}
+
+@article{esders_atomic_NNP,
+author = {Esders, Malte and Schnake, Thomas and Lederer, Jonas and Kabylda, Adil and Montavon, Gr{\'e}goire and Tkatchenko, Alexandre and M{\"u}ller, Klaus-Robert},
+title = {Analyzing Atomic Interactions in Molecules as Learned by Neural Networks},
+journal = {Journal of Chemical Theory and Computation},
+volume = {21},
+number = {2},
+pages = {714-729},
+year = {2025},
+doi = {10.1021/acs.jctc.4c01424},
+note ={PMID: 39792788},
+URL = {https://doi.org/10.1021/acs.jctc.4c01424},
+eprint = {https://doi.org/10.1021/acs.jctc.4c01424}
+}
+
+@article{DeePMD,
+title = {DeePMD-kit: A deep learning package for many-body potential energy representation and molecular dynamics},
+journal = {Computer Physics Communications},
+volume = {228},
+pages = {178-184},
+year = {2018},
+issn = {0010-4655},
+doi = {https://doi.org/10.1016/j.cpc.2018.03.016},
+url = {https://www.sciencedirect.com/science/article/pii/S0010465518300882},
+author = {Han Wang and Linfeng Zhang and Jiequn Han and Weinan E},
+keywords = {Many-body potential energy, Molecular dynamics, Deep neural networks},
+}
+
+@article{wACSF,
+    author = {Gastegger, M. and Schwiedrzik, L. and Bittermann, M. and Berzsenyi, F. and Marquetand, P.},
+    title = {wACSF—Weighted atom-centered symmetry functions as descriptors in machine learning potentials},
+    journal = {The Journal of Chemical Physics},
+    volume = {148},
+    number = {24},
+    pages = {241709},
+    year = {2018},
+    month = {03},
+    issn = {0021-9606},
+    doi = {10.1063/1.5019667},
+    url = {https://doi.org/10.1063/1.5019667},
+    eprint = {https://pubs.aip.org/aip/jcp/article-pdf/doi/10.1063/1.5019667/16654327/241709\_1\_online.pdf},
+}
+
+@article{SchNet,
+    author = {Schütt, K. T. and Sauceda, H. E. and Kindermans, P.-J. and Tkatchenko, A. and Müller, K.-R.},
+    title = {SchNet – A deep learning architecture for molecules and materials},
+    journal = {The Journal of Chemical Physics},
+    volume = {148},
+    number = {24},
+    pages = {241722},
+    year = {2018},
+    month = {03},
+    issn = {0021-9606},
+    doi = {10.1063/1.5019779},
+    url = {https://doi.org/10.1063/1.5019779},
+    eprint = {https://pubs.aip.org/aip/jcp/article-pdf/doi/10.1063/1.5019779/16655678/241722\_1\_online.pdf},
+}
+
+@article{PhysNet,
+author = {Unke, Oliver T. and Meuwly, Markus},
+title = {PhysNet: A Neural Network for Predicting Energies, Forces, Dipole Moments, and Partial Charges},
+journal = {Journal of Chemical Theory and Computation},
+volume = {15},
+number = {6},
+pages = {3678-3693},
+year = {2019},
+doi = {10.1021/acs.jctc.9b00181},
+note ={PMID: 31042390},
+URL = {https://doi.org/10.1021/acs.jctc.9b00181},
+eprint = {https://doi.org/10.1021/acs.jctc.9b00181}
+}
+
+@Article{AIMNet_NSE,
+author={Zubatyuk, Roman and Smith, Justin S. and Nebgen, Benjamin T. and Tretiak, Sergei and Isayev, Olexandr},
+title={Teaching a neural network to attach and detach electrons from molecules},
+journal={Nature Communications},
+year={2021},
+month={Aug},
+day={11},
+volume={12},
+number={1},
+pages={4870},
+issn={2041-1723},
+doi={10.1038/s41467-021-24904-0},
+url={https://doi.org/10.1038/s41467-021-24904-0}
+}
+
+@Article{NequIP,
+author={Batzner, Simon and Musaelian, Albert and Sun, Lixin and Geiger, Mario and Mailoa, Jonathan P. and Kornbluth, Mordechai and Molinari, Nicola and Smidt, Tess E. and Kozinsky, Boris},
+title={E(3)-equivariant graph neural networks for data-efficient and accurate interatomic potentials},
+journal={Nature Communications},
+year={2022},
+month={May},
+day={04},
+volume={13},
+number={1},
+pages={2453},
+issn={2041-1723},
+doi={10.1038/s41467-022-29939-5},
+url={https://doi.org/10.1038/s41467-022-29939-5}
+}
+
+@misc{adam_optim,
+      title={Adam: A Method for Stochastic Optimization}, 
+      author={Diederik P. Kingma and Jimmy Ba},
+      year={2017},
+      eprint={1412.6980},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/1412.6980}, 
+}
+
+@article{PES_gasphase,
+author = {Jiang, Bin and Li, Jun and Guo, Hua},
+title = {High-Fidelity Potential Energy Surfaces for Gas-Phase and Gas–Surface Scattering Processes from Machine Learning},
+journal = {The Journal of Physical Chemistry Letters},
+volume = {11},
+number = {13},
+pages = {5120-5131},
+year = {2020},
+doi = {10.1021/acs.jpclett.0c00989},
+note ={PMID: 32517472},
+URL = {https://doi.org/10.1021/acs.jpclett.0c00989},
+eprint = {https://doi.org/10.1021/acs.jpclett.0c00989}
+}
+
+@article{specialized_nnp1,
+    author = {Blank, Thomas B. and Brown, Steven D. and Calhoun, August W. and Doren, Douglas J.},
+    title = {Neural network models of potential energy surfaces},
+    journal = {The Journal of Chemical Physics},
+    volume = {103},
+    number = {10},
+    pages = {4129-4137},
+    year = {1995},
+    month = {09},
+    issn = {0021-9606},
+    doi = {10.1063/1.469597},
+    url = {https://doi.org/10.1063/1.469597},
+    eprint = {https://pubs.aip.org/aip/jcp/article-pdf/103/10/4129/19201895/4129\_1\_online.pdf},
+}
+
+@article{specialized_nnp2,
+author = {Gassner, Helmut and Probst, Michael and Lauenstein, Albert and Hermansson, Kersti},
+title = {Representation of Intermolecular Potential Functions by Neural Networks},
+journal = {The Journal of Physical Chemistry A},
+volume = {102},
+number = {24},
+pages = {4596-4605},
+year = {1998},
+doi = {10.1021/jp972209d},
+URL = {https://doi.org/10.1021/jp972209d},
+eprint = {https://doi.org/10.1021/jp972209d}
+}
+
+@Article{chemical_space,
+author={Kirkpatrick, Peter and Ellis, Clare},
+title={Chemical space},
+journal={Nature},
+year={2004},
+month={Dec},
+day={01},
+volume={432},
+number={7019},
+pages={823-823},
+issn={1476-4687},
+doi={10.1038/432823a},
+url={https://doi.org/10.1038/432823a}
+}
+
+@article{lipinski,
+title = {Lead- and drug-like compounds: the rule-of-five revolution},
+journal = {Drug Discovery Today: Technologies},
+volume = {1},
+number = {4},
+pages = {337-341},
+year = {2004},
+issn = {1740-6749},
+doi = {https://doi.org/10.1016/j.ddtec.2004.11.007},
+url = {https://www.sciencedirect.com/science/article/pii/S1740674904000551},
+author = {Christopher A. Lipinski},
+}
+
+@article{miller_experiment,
+author = {Stanley L. Miller },
+title = {A Production of Amino Acids Under Possible Primitive Earth Conditions},
+journal = {Science},
+volume = {117},
+number = {3046},
+pages = {528-529},
+year = {1953},
+doi = {10.1126/science.117.3046.528},
+URL = {https://www.science.org/doi/abs/10.1126/science.117.3046.528},
+eprint = {https://www.science.org/doi/pdf/10.1126/science.117.3046.528}}
+
+@article{prebiotic_compounds_EE_atmosphere,
+author = {Christian Jenewein  and Aurora Maíz-Sicilia  and Fernando Rull  and Lorena González-Souto  and Juan Manuel García-Ruiz },
+title = {Concomitant formation of protocells and prebiotic compounds under a plausible early Earth atmosphere},
+journal = {Proceedings of the National Academy of Sciences},
+volume = {122},
+number = {2},
+pages = {e2413816122},
+year = {2025},
+doi = {10.1073/pnas.2413816122},
+URL = {https://www.pnas.org/doi/abs/10.1073/pnas.2413816122},
+eprint = {https://www.pnas.org/doi/pdf/10.1073/pnas.2413816122},
+}
+
+@Article{astroid_sample,
+author={Glavin, Daniel P. and Dworkin, Jason P. and Alexander, Conel M. O'D. and Aponte, Jos{\'e} C. and Baczynski, Allison A. and Barnes, Jessica J. and Bechtel, Hans A. and Berger, Eve L. and Burton, Aaron S. and Caselli, Paola and Chung, Angela H. and Clemett, Simon J. and Cody, George D. and Dominguez, Gerardo and Elsila, Jamie E. and Farnsworth, Kendra K. and Foustoukos, Dionysis I. and Freeman, Katherine H. and Furukawa, Yoshihiro and Gainsforth, Zack and Graham, Heather V. and Grassi, Tommaso and Giuliano, Barbara Michela and Hamilton, Victoria E. and Haenecour, Pierre and Heck, Philipp R. and Hofmann, Amy E. and House, Christopher H. and Huang, Yongsong and Kaplan, Hannah H. and Keller, Lindsay P. and Kim, Bumsoo and Koga, Toshiki and Liss, Michael and McLain, Hannah L. and Marcus, Matthew A. and Matney, Mila and McCoy, Timothy J. and McIntosh, Oph{\'e}lie M. and Mojarro, Angel and Naraoka, Hiroshi and Nguyen, Ann N. and Nuevo, Michel and Nuth, Joseph A. and Oba, Yasuhiro and Parker, Eric T. and Peretyazhko, Tanya S. and Sandford, Scott A. and Santos, Ewerton and Schmitt-Kopplin, Philippe and Seguin, Frederic and Simkus, Danielle N. and Shahid, Anique and Takano, Yoshinori and Thomas-Keprta, Kathie L. and Tripathi, Havishk and Weiss, Gabriella and Zheng, Yuke and Lunning, Nicole G. and Righter, Kevin and Connolly, Harold C. and Lauretta, Dante S.},
+title={Abundant ammonia and nitrogen-rich soluble organic matter in samples from asteroid (101955) Bennu},
+journal={Nature Astronomy},
+year={2025},
+month={Jan},
+day={29},
+issn={2397-3366},
+doi={10.1038/s41550-024-02472-9},
+url={https://doi.org/10.1038/s41550-024-02472-9}
+}
+
+
 
 @article{NN_SVG, 
 doi = {10.21105/joss.00747}, 

@@ -1,6 +1,16 @@
+\chapter{Description of AEV parameters}
+\label{appendix:AEV_param}
+{\bf Write a paragraph heading.}
+
+Appendix E in Richard's dissertation could be a useful reference, but double check with GitHub for updated values.
+
+
 \chapter{Neural network structures in ANAKIN-ME models}
+\label{appendix:NN_arch}
+{\bf Write a paragraph heading.}
 
 Give the shape and number of parameters of ANI networks (at least 1x, 1ccx, 2x, DR, and 1xnr since these are all being used or referenced in this dissertation. 
+
 
 Format this nicely:
 ANI-2x: 8 ensembled models \\
@@ -9,55 +19,28 @@ StandardAngular, StandardRadial; CutoffCosine (for radial+angular): determine te
 FullPairwise: neighbor list computation\\
 EnergyShifter: converts energies from near-zero values output by networks to the "physical range" of values for different atom types \\
 ChemicalSymbolsToInts, SpeciesConverter: helper functions to produce species tensor \\
-H Network shape: 1008 x 256 x 192 x 160 x 1 \\
-C Network shape: 1008 x 224 x 192 x 160 x 1 \\
-N Network shape: 1008 x 192 x 160 x 128 x 1 \\
-O Network shape: 1008 x 192 x 160 x 128 x 1 \\
-S Network shape: 1008 x 160 x 128 x 96 x 1 \\
-F Network shape: 1008 x 160 x 128 x 96 x 1 \\
-Cl Network shape: 1008 x 160 x 128 x 96 x 1 \\
 
-ANIdr: 7 ensembled models \\
-Pair interactions: AEVComputer (FullPairwise: [StandardAngular, CutoffSmooth]; [StandardRadial, CutoffSmooth]) \\
-EnergyShifter, ChemicalSymbolsToInts, SpeciesConverter same as 2x \\
-Linear layers connected with GELU activation functions: \\
-H Network shape: 1008 x 256 x 192 x 160 x 1 \\
-C Network shape: 1008 x 224 x 192 x 160 x 1 \\
-N Network shape: 1008 x 192 x 160 x 128 x 1 \\
-O Network shape: 1008 x 192 x 160 x 128 x 1 \\
-S Network shape: 1008 x 160 x 128 x 96 x 1 \\
-F Network shape: 1008 x 160 x 128 x 96 x 1 \\
-Cl Network shape: 1008 x 160 x 128 x 96 x 1 \\
-TwoBodyDispersionD3 (CutoffSmooth, BJDamp) \\
-RepulsionXTB (CutoffSmooth) \\
-Additional network architecture for repulsion, linear layers connected with GELU activation functions: \\
-H Network shape: 1008 x 256 x 192 x 160 x 1 \\
-C Network shape: 1008 x 224 x 192 x 160 x 1 \\
-N Network shape: 1008 x 192 x 160 x 128 x 1 \\
-O Network shape: 1008 x 192 x 160 x 128 x 1 \\
-S Network shape: 1008 x 160 x 128 x 96 x 1 \\
-F Network shape: 1008 x 160 x 128 x 96 x 1 \\
-Cl Network shape: 1008 x 160 x 128 x 96 x 1 \\
-
-
-\chapter{Description of AEV parameters}
-
-Appendix E in Richard's dissertation could be a useful reference, but double check with GitHub for updated values.
-
-\chapter{Supplemental information}
-{\bf Paragraph headings.} There is no official fourth level heading. Do not use the Paragraph heading feature in LaTeX, simply apply the bold characteristic to the first few words of a paragraph followed by a colon or period.
-
-Please note that if you are adding a table or figure that takes up a whole page, you must have some text underneath your appendix title before using the next page.
-
-\begin{table}[h]
-\caption[Appendix table]{Additionally, the rules regarding italics and bolding does not apply to appendices. You can do whatever you'd like here mostly.}
-%\begin{center}
-\begin{tabularx}{\textwidth}{XXXX}\hline
-\textbf{Some}    & \textbf{Data}  & \textbf{Goes}  & \textbf{Here}\\\hline
-Some    & Data  & Goes  & Here\\
-Some    & Data  & Goes  & Here\\
-Some    & Data  & Goes  & Here\\\hline
-\end{tabularx}
-%\end{center}
-
+\begin{table}[hb!]
+    \caption{ANI-2xr network size}
+    \begin{tabularx}{\textwidth}{XXXXXX}\hline
+    \textbf{Element} & \textbf{Input size}  & \textbf{1\textsuperscript{st} layer}  & \textbf{2\textsuperscript{nd} layer} & \textbf{3\textsuperscript{rd} layer} & \textbf{Output layer}\\\hline
+    H & 1008 & 256 & 192 & 160 & 1 \\
+    C & 1008 & 224 & 192 & 160 & 1 \\
+    N & 1008 & 192 & 160 & 128 & 1 \\
+    O & 1008 & 192 & 160 & 128 & 1 \\
+    S & 1008 & 160 & 128 & 96 & 1 \\
+    F & 1008 & 160 & 128 & 96 & 1 \\
+    Cl & 1008 & 160 & 128 & 96 & 1 \\\hline
+    \end{tabularx}
 \end{table}
+
+
+
+INSERT ANI-1xnr TABLES HERE, BOTH THE NETWORK AND AEV PARAMS
+
+
+
+\chapter{Ground state atomic energies}
+\label{appendix:GSAEs}
+{\bf Write a paragraph heading.} Give the ground state atomic energies used in ANI-2x models.
+Note somehow that ANI-1xnr still uses SAEs rather than GSAEs.

@@ -6,15 +6,71 @@ This is not included in the `exampleMasterFile.tex` file, just a remnant from tr
 
 ## Chapters (WIP)
 
-1. Introduction
+1. Introduction and background information
 
-2. Atomic energies in ANI neural network potentials
+    a. ML in chemistry:
+
+        - Atomic representation
+
+        - Model architecture
+
+        - Data quality and availability
+
+    b. ANAKIN-ME
+
+        - AEVs
+
+        - ANI model architecture
+
+2. Exploration of atomistic predictions
+
+    a. ANI predictions
+
+        - Total energy as a sum of atomic energies
+
+        - Uncertainty in ANI neural network predictions
+
+        - Exploring the flaws in predicting total energy as a sum of atomic energies
+
+    b. Drawback of atomic energy predictions
+
+    c. Need for a practical, physical quantity to estimate uncertainty
 
 3. Trends in atomic force predictions by ANI neural network potentials
 
-4. Simulating reactive chemistry with LAMMPS-ANI
+    a. Potential solution
 
-5. Analysis of organic reactions under primordial earth conditions
+        - Forces
+
+        - Force magnitudes
+
+    b. Analyzing the uncertainty of force predictions
+
+        - Atom isolator
+
+        - Capping atoms
+
+        - Drawback: configurational sampling
+
+4. Simulating and distributing chemical simulations with LAMMPS-ANI
+
+    a. CUDA-accelerated AEV computation
+
+    b. GPU parallelization
+
+    c. ANI-1xnr
+
+    d. The Miller Experiment
+
+6. Analysis of organic reactions under primordial earth conditions; Hero Run
+
+    a. MolFind
+
+        - GraphMatcher
+
+        - Parallelization
+
+    b. 
 
 ## File descriptions
 
