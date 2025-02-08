@@ -1,6 +1,8 @@
 \chapter{Uncertainty in atomic force predictions}
 \label{chapter3}
 
+
+
 Optimal ensembling averaging of neural networks: \cite{optimal_ensemble_averaging_naftaly}\\
 Ensemble deep learning: a review: \cite{ensemble_deep_learning_review_ganaie}\\
 Addressing uncertainty in atomistic machine learning: \cite{uncertainty_atomistic_ml_peterson}\\
@@ -20,6 +22,9 @@ Atomic energies were a wash, there seems to be no way to reduce the predictive u
 We need something that is supported by \textit{ab initio} theory, which our networks can predict in a streamlined way in order to estimate the uncertainty of predictions at an atomistic level. There is only one quantity which exists for every atom: forces. (Could talk about dipoles here, and possibly mention how dipoles are sometimes non-existent, but the forces acting upon atoms usually aren't -- at most they are such a small value that they're considered zero -- but we don't really explore global equilibrium with MD so this shouldn't be an issue).
 
 \subsection{Forces}
+
+ani outputs forces as [models, molecules, atoms, force components]
+
 
 \subsection{Force magnitudes}
 

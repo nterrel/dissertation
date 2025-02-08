@@ -133,7 +133,7 @@ Shallow networks with few neurons are excellent tools for learning the patterns 
 However, larger network sizes are not necessarily better: excessively deep neural networks are more costly to train and increase risks of overfitting, while networks with too many neurons expect higher-dimensional behavior than the interactions captured in the training data.
 Balancing the size of networks with the complexity and scope of the data used in training is vital for designing model architectures that achieve the accuracy and efficiency that has become synonymous with interatomic neural network potential (NNP) models. 
 
-Supervised training of ML models involves iteratively passing data through the networks, forcing the model to predict a desired property of the data.
+Supervised training of ML models involves iteratively passing data through the networks, \authorRemark{forcing} the model to predict a desired property of the data.
 This output prediction is compared to a reference value, as training data is labeled, and the predictive error is computed to weigh in the loss, or cost, function which determines how much the weights need to update in order to better capture the behavior represented in the training data. 
 In interatomic potential models, at least within the scope of the work presented here, the labeled data is \textit{ab initio} computations of molecular energy and the forces acting upon atoms within a molecular conformation.
 The weights are updated via a fine-tuning process known as backpropagation, which uses a stochastic gradient descent optimizer such as Adam \cite{adam_optim} to change the weights based on the gradients of the loss function at each training iteration. 
@@ -167,7 +167,7 @@ The accuracy of reference data labels is vital to the fidelity of an ML model.
 In NNP models trained on \textit{ab initio} molecular energy computations this corresponds to the level of quantum theory utilized in generating the training data, such as DFT \cite{dft_first_paper} or coupled-cluster \cite{coupled_cluster_first_paper} methods.
 Lower-level methods introduce approximation errors that will be learned by the model, whereas higher-level, more chemically accurate methods are too computationally prohibitive to apply to large systems or for generating vast quantities of data.
 One possible solution to this trade-off is the use of transfer learning, where the base-level physics are learned from lower-level theory, and the model is later fine tuned with a small subset of data produced by more computationally expensive methods.
-Applications of transfer learning are discussed in greater detail in \ref{sec:ANI_intro} and \ref{subsec:ANI_datasets}.
+Applications of transfer learning are discussed in greater detail in Subsection \ref{subsec:ANI_datasets}.
 
 Beyond the accuracy of reference data, diversity plays an integral role in the robustness of a model.
 Datasets limited to a narrow region of chemical space---\textit{e.g.}, only sampling equilibrium geometries or from a small subset of chemical species---will result in less generalizable inference performance when encountering unseen molecular structures, despite reporting low errors during testing and validation.
