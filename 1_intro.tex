@@ -108,7 +108,7 @@ An example of a small but typical deep neural network is given in \ref{fig:nn_ar
 \begin{figure}[!h]
     \centering
     \includegraphics[width=0.8\linewidth]{Images/useful figures/nn_arch.png}
-    \caption{Example structure of a deep neural network architecture comprised of an input layer, two hidden layers, and an output layer. The weights on each connection are represented by the intensity of the line the nodes.}
+    \caption[Example structure of deep neural network]{Example structure of a deep neural network architecture comprised of an input layer, two hidden layers, and an output layer. The weights on each connection are represented by the intensity of the line the nodes.}
     \label{fig:nn_arch}
 \end{figure}
 
@@ -204,7 +204,9 @@ Figure \ref{fig:accuracy-cost} qualitatively demonstrates how the various publis
 \begin{figure}[!ht]
     \centering
     \includegraphics[width=1\linewidth]{Images/accuracy-cost.png}
-    \caption{Approximate scaling of compute time versus chemical accuracy in various computational chemistry methods. Neural network potential models in the TorchANI package compute energies at DFT (or greater) levels of accuracy, at a cost similar to that of force fields.}
+    \caption[Approximate scaling of compute time versus chemical accuracy in various computational chemistry methods]{
+    Approximate scaling of compute time versus chemical accuracy in various computational chemistry methods. Neural network potential models in the TorchANI package compute energies at DFT (or greater) levels of accuracy, at a cost similar to that of force fields.
+    }
     \label{fig:accuracy-cost}
 \end{figure}
 
@@ -239,7 +241,7 @@ For a full list of parameters used in the TorchANI AEV computer, see Appendix \r
 \begin{figure}[hb]
     \centering
     \includegraphics[width=1\linewidth]{Images/aev_radius/AEV_construction.png}
-    \caption{Example of the terms in an AEV for the lone oxygen in the C$_6$H$_{10}$O molecule used in Fig. \ref{fig:aev_radius}. \authorRemark{Say a bit more about this process.}}
+    \caption[Example of atomic environment vector construction]{Example of the terms in an AEV for the lone oxygen in the C$_6$H$_{10}$O molecule used in Fig. \ref{fig:aev_radius}. \authorRemark{Say a bit more about this process.}}
     \label{fig:aev_construction}
 \end{figure}
 
@@ -272,9 +274,9 @@ The predictive error of an ANI model is minimized in training using a mean squar
 An example of the energy loss function utilized in training a typical ANI model is given in Eqn. \ref{eq:energy_loss_function}.
 
 \begin{equation}
-    \mathcal{L}_{2\text{x}} =
+    \mathcal{L}_{\text{2x}} =
     \frac{1}{N_{\text{M}}} 
-    \sum_{i=0}^{N_{\text{M}}} 
+    \sum_{i=1}^{N_{\text{M}}} 
     \left( \frac{ \left( E_{\text{ANI}}^\text{o} - E_{\text{QM}}^\text{o} \right)^2}
     {\sqrt{N_{\text{atoms}}}} \right)
     \label{eq:energy_loss_function}

@@ -1,0 +1,122 @@
+\chapter{Description of AEV parameters}
+\label{appendix:AEV_param}
+{\bf Atomic environment vector computer parameters.}
+
+Make sure the symbols match up with \ref{eq:radial_symmetry_function} and \ref{eq:angular_symmetry_function} \\
+
+
+
+
+Cutoff radius Rcr = 5.2 \\
+EtaR = 19.7 \\
+ShfR (Rs) parameters range from 0.9 to 5.2, with 16 distinct values: [0.8, 1.06875, 1.3375, 1.60625, 1.875, 2.14375, 2.4125, 2.68125, 2.95, 3.21875, 3.4875, 3.75625, 4.025, 4.29375, 4.5625, 4.83125] \\
+For the angular component, the parameters are: \\
+Cutoff angle Rca = 3.5 \\
+Zeta = 14.1 \\
+ShfZ (ThetaS) parameters span from 0 to pi and include 4 distinct values: [0.39269908, 1.1780972, 1.9634954, 2.7488936] \\
+EtaA = 12.5 \\
+ShfA (Rs) parameters for the angular component range from 0.8 to 3.5, with 8 distinct values: [0.8, 1.1375, 1.475, 1.8125, 2.15, 2.4875, 2.825, 3.1625] \\
+
+ANI-1xnr \\
+Rcr = 5.2000e+00 \\
+Rca = 3.5000e+00 \\ 
+EtaR = [6.5700000e+01] \\
+ShfR = [5.0000000e-01,6.4687500e-01,7.9375000e-01,9.4062500e-01,1.0875000e+00,1.2343750e+00,1.3812500e+00,1.5281250e+00,1.6750000e+00,1.8218750e+00,1.9687500e+00,2.1156250e+00,2.2625000e+00,2.4093750e+00,2.5562500e+00,2.7031250e+00,2.8500000e+00,2.9968750e+00,3.1437500e+00,3.2906250e+00,3.4375000e+00,3.5843750e+00,3.7312500e+00,3.8781250e+00,4.0250000e+00,4.1718750e+00,4.3187500e+00,4.4656250e+00,4.6125000e+00,4.7593750e+00, 4.9062500e+00, 5.0531250e+00] \\
+Zeta = [1.4100000e+01] \\
+ShfZ = [3.9269908e-01, 1.1780972e+00, .9634954e+00, 2.7488936e+00] \\
+EtaA = [1.0100000e+01] \\
+ShfA = [5.0000000e-01, 8.7500000e-01, 1.2500000e+00, 1.6250000e+00, 2.0000000e+00, 2.3750000e+00, 2.7500000e+00, 3.1250000e+00] \\
+Atyp = [H,C,N,O] \\
+
+
+\chapter{Neural network structures in ANAKIN-ME models}
+\label{appendix:NN_arch}
+{\bf ANAKIN-ME model components.} The ANI-2x model is an ensemble-based neural network potential designed for large-scale and high-accuracy molecular energy predictions. It consists of several key computational components that define its structure, data processing, and energy evaluation:
+
+\begin{itemize}
+    \item \textbf{ANI-2x Model}: Composed of eight ensembled neural networks, which collectively improve predictive accuracy and generalizability by averaging outputs from multiple models.
+
+    \item \textbf{Atomic Environment Representation}:
+    \begin{itemize}
+        \item AEVComputer: Constructs a fixed-length atomic environment vector (AEV) for each atom, encoding its local chemical surroundings in a rotationally, translationally, and permutationally invariant manner; defined by the parameters in Appendix \ref{appendix:AEV_param}.
+    \end{itemize}
+
+    \item \textbf{Symmetry Function Transformations}:
+    \begin{itemize}
+        \item StandardRadial \& StandardAngular: Define the two-body (radial) and three-body (angular) symmetry functions that contribute to the AEV construction, as shown in Equations \ref{eq:radial_symmetry_function} and \ref{eq:angular_symmetry_function}.
+        \item CutoffCosine: Implements a smooth cutoff function to restrict interactions to a finite spatial region, defined in Eqn. \ref{eq:cosine_cutoff_function}.
+    \end{itemize}
+
+    \item \textbf{Neighbor List Computation}:
+    \begin{itemize}
+        \item FullPairwise: Computes full neighbor lists, ensuring that all atomic interactions within the cutoff radius are considered.
+    \end{itemize}
+
+    \item \textbf{Energy Calibration and Transformation}:
+    \begin{itemize}
+        \item EnergyShifter: Adjusts raw atomic energy outputs from the neural network to physically meaningful values. For ANI-2xr this adds ground state atomic energies to each predicted atomic energy contribution.
+    \end{itemize}
+
+    \item \textbf{Species Encoding and Conversion}:
+    \begin{itemize}
+        \item ChemicalSymbolsToInts \& SpeciesConverter: Convert atomic species from chemical symbols (H, C, N, O, etc.) into numerical tensor representations.
+    \end{itemize}
+\end{itemize}
+
+The network size for 2x-like ANI models is presented in Table \ref{tbl:2x_network_size}.
+
+\begin{table}[hb!]
+    \caption[ANI-2x-like network shapes]{Network size (number of nodes) used by ANI-2x-like networks.}
+    \label{tbl:2x_network_size}
+    \begin{tabularx}{\textwidth}{XXXXXX}
+    \toprule
+    \textbf{Element} & \textbf{Input size}  & \textbf{1\textsuperscript{st} layer}  & \textbf{2\textsuperscript{nd} layer} & \textbf{3\textsuperscript{rd} layer} & \textbf{Output layer}\\
+    \midrule
+    H & 1008 & 256 & 192 & 160 & 1 \\
+    C & 1008 & 224 & 192 & 160 & 1 \\
+    N & 1008 & 192 & 160 & 128 & 1 \\
+    O & 1008 & 192 & 160 & 128 & 1 \\
+    S & 1008 & 160 & 128 & 96 & 1 \\
+    F & 1008 & 160 & 128 & 96 & 1 \\
+    Cl & 1008 & 160 & 128 & 96 & 1 \\
+    \bottomrule
+    \end{tabularx}
+\end{table}
+
+
+
+%\authorRemark{INSERT ANI-1xnr TABLES HERE, BOTH THE NETWORK AND AEV PARAMS}
+
+
+
+\chapter{Ground state atomic energies}
+\label{appendix:GSAEs}
+{\bf Self-energies.} 
+ANI models predict atomic energy outputs that are deviations from the self-energies of each atom. 
+For the original 1x and 2x models, self atomic energies (SAEs) were used, while 2xr and other modern ANI models ground state atomic energies (GSAEs). 
+Self energies are described in greater detail in Subsection \ref{subsec:total_E_sum_AEs}.
+
+
+\begin{table}[hb!]
+\label{tbl:GSAEs}
+\center 
+    \caption[$\omega$B97X ground-state atomic energies used in ANI-2xr]{Calculated ground-state atomic energies (GSAEs) for H, C, N, O, S, F, and Cl atoms. All values presented in kcal/mol for consistency with results discussed, though the TorchANI atomic neural networks and EnergyShifter only see values in Hartree.}
+    \begin{tabular}{l r}
+    \toprule
+    Element & Ground state atomic energy \\
+    \midrule
+    Hydrogen & -313.3288 kcal/mol \\
+    Carbon & -23741.0879 kcal/mol \\
+    Nitrogen & -34245.2539 kcal/mol \\
+    Oxygen & -47089.8477 kcal/mol \\
+    Sulfur & -249799.8594 kcal/mol \\
+    Fluorine & -62559.4922 kcal/mol \\
+    Chlorine & -288727.5938 kcal/mol \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+% NOTE: Fix the above table
+
+%\authorRemark{Note somehow that ANI-1xnr still uses SAEs rather than GSAEs.}
+
