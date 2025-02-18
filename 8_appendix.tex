@@ -1,63 +1,116 @@
 \chapter{Description of AEV parameters}
 \label{appendix:AEV_param}
-{\bf Atomic environment vector computer parameters.}
+%{\bf Atomic environment vector computer parameters.}
 
-Make sure the symbols match up with \ref{eq:radial_symmetry_function} and \ref{eq:angular_symmetry_function} \\
+The Atomic Environment Vector (AEV) representation in ANI models relies on a set of carefully tuned parameters that define the radial and angular symmetry functions. These parameters determine the sensitivity of the neural network to local atomic interactions.
+\begin{center}
+\textbf{ANI-2x AEV parameters}
+\end{center}
 
+\textbf{Supported Atomic Types}
+%The following elements are included in the ANI-2x dataset:
+\begin{equation}
+\text{Atype} = \{ \text{H}, \text{C}, \text{N}, \text{O}, \text{S}, \text{F}, \text{Cl}\}
+\end{equation}
 
+\textbf{Radial Component Parameters}
+\begin{itemize}
+    \item Cutoff Radius (\( R_c^r \)): \( 5.2 \) \angstrom
+    \item Radial Decay Parameter (\( \eta_r \)): \( 19.7 \)
+    \item Shifted Radial Parameters (\( \text{ShfR} \)):  
+    \begin{equation}
+        \begin{aligned}
+        \big[ &0.8, 1.06875, 1.3375, 1.60625, 1.875, 2.14375, 2.4125, 2.68125, \\
+             &2.95, 3.21875, 3.4875, 3.75625, 4.025, 4.29375, 4.5625, 4.83125 \big]
+        \end{aligned}
+    \end{equation}
+\end{itemize}
 
+\textbf{Angular Component Parameters}
+\begin{itemize}
+    \item Cutoff Angle (\( R_c^a \)): \( 3.5 \) \angstrom
+    \item Angular Exponent (\( \zeta \)): \( 14.1 \)
+    \item Shifted Angular Parameters (\( \text{ShfZ} \)):  
+    \begin{equation}
+    \left[ 0.39269908, 1.1780972, 1.9634954, 2.7488936 \right]
+    \end{equation}
+    \item Angular Decay Parameter (\( \eta_a \)): \( 12.5 \)
+    \item Shifted Angular Radial Parameters (\( \text{ShfA} \)):  
+    \begin{equation}
+    \left[ 0.8, 1.1375, 1.475, 1.8125, 2.15, 2.4875, 2.825, 3.1625 \right]
+    \end{equation}
+\end{itemize}
 
-Cutoff radius Rcr = 5.2 \\
-EtaR = 19.7 \\
-ShfR (Rs) parameters range from 0.9 to 5.2, with 16 distinct values: [0.8, 1.06875, 1.3375, 1.60625, 1.875, 2.14375, 2.4125, 2.68125, 2.95, 3.21875, 3.4875, 3.75625, 4.025, 4.29375, 4.5625, 4.83125] \\
-For the angular component, the parameters are: \\
-Cutoff angle Rca = 3.5 \\
-Zeta = 14.1 \\
-ShfZ (ThetaS) parameters span from 0 to pi and include 4 distinct values: [0.39269908, 1.1780972, 1.9634954, 2.7488936] \\
-EtaA = 12.5 \\
-ShfA (Rs) parameters for the angular component range from 0.8 to 3.5, with 8 distinct values: [0.8, 1.1375, 1.475, 1.8125, 2.15, 2.4875, 2.825, 3.1625] \\
+\bigskip
+\bigskip
 
-ANI-1xnr \\
-Rcr = 5.2000e+00 \\
-Rca = 3.5000e+00 \\ 
-EtaR = [6.5700000e+01] \\
-ShfR = [5.0000000e-01,6.4687500e-01,7.9375000e-01,9.4062500e-01,1.0875000e+00,1.2343750e+00,1.3812500e+00,1.5281250e+00,1.6750000e+00,1.8218750e+00,1.9687500e+00,2.1156250e+00,2.2625000e+00,2.4093750e+00,2.5562500e+00,2.7031250e+00,2.8500000e+00,2.9968750e+00,3.1437500e+00,3.2906250e+00,3.4375000e+00,3.5843750e+00,3.7312500e+00,3.8781250e+00,4.0250000e+00,4.1718750e+00,4.3187500e+00,4.4656250e+00,4.6125000e+00,4.7593750e+00, 4.9062500e+00, 5.0531250e+00] \\
-Zeta = [1.4100000e+01] \\
-ShfZ = [3.9269908e-01, 1.1780972e+00, .9634954e+00, 2.7488936e+00] \\
-EtaA = [1.0100000e+01] \\
-ShfA = [5.0000000e-01, 8.7500000e-01, 1.2500000e+00, 1.6250000e+00, 2.0000000e+00, 2.3750000e+00, 2.7500000e+00, 3.1250000e+00] \\
-Atyp = [H,C,N,O] \\
+\begin{center}
+\textbf{ANI-1xnr AEV Parameters}
+\end{center}
+The ANI-1xnr dataset refines the standard AEV parameters for improved accuracy in reactive simulations. The following are its optimized values:
+
+\textbf{Supported Atomic Types}
+%The following elements are included in the ANI-1xnr dataset:
+\begin{equation}
+\text{Atype} = \{ \text{H}, \text{C}, \text{N}, \text{O} \}
+\end{equation}
+
+\textbf{Radial Component Parameters}
+\begin{itemize}
+    \item Cutoff Radius (\( R_c^r \)): \( 5.2 \) \angstrom
+    \item Radial Decay Parameter (\( \eta_r \)): \( 65.7 \)
+    \item Shifted Radial Parameters (\( \text{ShfR} \)):  
+    \begin{equation}
+    \left[ 0.50, 0.65, 0.79, 0.94, 1.09, 1.23, 1.38, 1.53, 1.68, 1.82, 1.97, 4.91, 5.05 \right]
+    \end{equation}
+\end{itemize}
+
+\textbf{Angular Component Parameters}
+\begin{itemize}
+    \item Cutoff Angle (\( R_c^a \)): \( 3.5 \) \angstrom
+    \item Angular Exponent (\( \zeta \)): \( 14.1 \)
+    \item Shifted Angular Parameters (\( \text{ShfZ} \)):  
+    \begin{equation}
+    \left[ 0.39269908, 1.1780972, 1.9634954, 2.7488936 \right]
+    \end{equation}
+    \item Angular Decay Parameter (\( \eta_a \)): \( 10.1 \)
+    \item Shifted Angular Radial Parameters (\( \text{ShfA} \)):  
+    \begin{equation}
+    \left[ 0.50, 0.88, 1.25, 1.63, 2.00, 2.38, 2.75, 3.13 \right]
+    \end{equation}
+\end{itemize}
+
 
 
 \chapter{Neural network structures in ANAKIN-ME models}
 \label{appendix:NN_arch}
-{\bf ANAKIN-ME model components.} The ANI-2x model is an ensemble-based neural network potential designed for large-scale and high-accuracy molecular energy predictions. It consists of several key computational components that define its structure, data processing, and energy evaluation:
+The ANI-2x model is an ensemble-based neural network potential designed for large-scale and high-accuracy molecular energy predictions. It consists of several key computational components that define its structure, data processing, and energy evaluation:
 
 \begin{itemize}
-    \item \textbf{ANI-2x Model}: Composed of eight ensembled neural networks, which collectively improve predictive accuracy and generalizability by averaging outputs from multiple models.
+    \item ANI-2x Model: Composed of eight ensembled neural networks, which collectively improve predictive accuracy and generalizability by averaging outputs from multiple models.
 
-    \item \textbf{Atomic Environment Representation}:
+    \item Atomic Environment Representation:
     \begin{itemize}
         \item AEVComputer: Constructs a fixed-length atomic environment vector (AEV) for each atom, encoding its local chemical surroundings in a rotationally, translationally, and permutationally invariant manner; defined by the parameters in Appendix \ref{appendix:AEV_param}.
     \end{itemize}
 
-    \item \textbf{Symmetry Function Transformations}:
+    \item Symmetry Function Transformations:
     \begin{itemize}
         \item StandardRadial \& StandardAngular: Define the two-body (radial) and three-body (angular) symmetry functions that contribute to the AEV construction, as shown in Equations \ref{eq:radial_symmetry_function} and \ref{eq:angular_symmetry_function}.
         \item CutoffCosine: Implements a smooth cutoff function to restrict interactions to a finite spatial region, defined in Eqn. \ref{eq:cosine_cutoff_function}.
     \end{itemize}
 
-    \item \textbf{Neighbor List Computation}:
+    \item Neighbor List Computation:
     \begin{itemize}
         \item FullPairwise: Computes full neighbor lists, ensuring that all atomic interactions within the cutoff radius are considered.
     \end{itemize}
 
-    \item \textbf{Energy Calibration and Transformation}:
+    \item Energy Calibration and Transformation:
     \begin{itemize}
         \item EnergyShifter: Adjusts raw atomic energy outputs from the neural network to physically meaningful values. For ANI-2xr this adds ground state atomic energies to each predicted atomic energy contribution.
     \end{itemize}
 
-    \item \textbf{Species Encoding and Conversion}:
+    \item Species Encoding and Conversion:
     \begin{itemize}
         \item ChemicalSymbolsToInts \& SpeciesConverter: Convert atomic species from chemical symbols (H, C, N, O, etc.) into numerical tensor representations.
     \end{itemize}
@@ -91,7 +144,6 @@ The network size for 2x-like ANI models is presented in Table \ref{tbl:2x_networ
 
 \chapter{Ground state atomic energies}
 \label{appendix:GSAEs}
-{\bf Self-energies.} 
 ANI models predict atomic energy outputs that are deviations from the self-energies of each atom. 
 For the original 1x and 2x models, self atomic energies (SAEs) were used, while 2xr and other modern ANI models ground state atomic energies (GSAEs). 
 Self energies are described in greater detail in Subsection \ref{subsec:total_E_sum_AEs}.

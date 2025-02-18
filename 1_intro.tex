@@ -47,7 +47,7 @@ The use of ML-PES is not flawless, however, as machine-learned models can very e
 To minimize this, there are a few important considerations when implementing a machine-learned interatomic model: atomic representation, model architecture, and the quality and availability of training data.
 
 
-\subsection{Atomic representation}
+\subsection{Atomic Representation}
 \label{subsec:ML_atomic_representation}
 In order to train learning models, or use any computational method for chemical systems, one must consider the molecular (or atomic) representation which defines the system. 
 This is especially important in atomistic ML models, where the atomic representation is the input which the predictive algorithm uses to estimate a property of the system.
@@ -90,7 +90,7 @@ This encoding, often represented as a vector of descriptors, serves as the input
 The utility of atom-centered symmetry functions and atomic descriptors is further explored in section \ref{subsec:AEV}.
 
 
-\subsection{Model architecture}
+\subsection{Model Architecture}
 \label{subsec:ML_model_architecture}
 
 The representation of atomic environments is an important facet of machine-learned interatomic potential models, but the predictive power of a learning model is determined by the choice of architecture. 
@@ -133,7 +133,7 @@ Shallow networks with few neurons are excellent tools for learning the patterns 
 However, larger network sizes are not necessarily better: excessively deep neural networks are more costly to train and increase risks of overfitting, while networks with too many neurons expect higher-dimensional behavior than the interactions captured in the training data.
 Balancing the size of networks with the complexity and scope of the data used in training is vital for designing model architectures that achieve the accuracy and efficiency that has become synonymous with interatomic neural network potential (NNP) models. 
 
-Supervised training of ML models involves iteratively passing data through the networks, \authorRemark{forcing} the model to predict a desired property of the data.
+Supervised training of ML models involves iteratively passing data through the networks and asking the model to predict a desired property of the data.
 This output prediction is compared to a reference value, as training data is labeled, and the predictive error is computed to weigh in the loss, or cost, function which determines how much the weights need to update in order to better capture the behavior represented in the training data. 
 In interatomic potential models, at least within the scope of the work presented here, the labeled data is \textit{ab initio} computations of molecular energy and the forces acting upon atoms within a molecular conformation.
 The weights are updated via a fine-tuning process known as backpropagation, which uses a stochastic gradient descent optimizer such as Adam \cite{adam_optim} to change the weights based on the gradients of the loss function at each training iteration. 
@@ -146,7 +146,7 @@ The choice of training data greatly impacts the ability of a model to extrapolat
 Without representing generalized behavior in the training data, a model will be unable to represent generalizable performance and applicability.
 Section \ref{subsec:Data quality and availability} explores the importance of comprehensive training data in the development of ML models.
 
-\subsection{Data quality and availability}
+\subsection{Data Quality and Availability}
 \label{subsec:Data quality and availability}
 
 Statistical learning models are bounded in accuracy by the quality and quantity of data used in training. 
@@ -241,12 +241,12 @@ For a full list of parameters used in the TorchANI AEV computer, see Appendix \r
 \begin{figure}[hb]
     \centering
     \includegraphics[width=1\linewidth]{Images/aev_radius/AEV_construction.png}
-    \caption[Example of atomic environment vector construction]{Example of the terms in an AEV for the lone oxygen in the C$_6$H$_{10}$O molecule used in Fig. \ref{fig:aev_radius}. \authorRemark{Say a bit more about this process.}}
+    \caption[Example of atomic environment vector construction]{Example of the terms in an AEV for the lone oxygen in the C$_6$H$_{10}$O molecule used in Fig. \ref{fig:aev_radius}.}
     \label{fig:aev_construction}
 \end{figure}
 
 During training and inference, AEVs serve as the inputs to element-specific neural networks, where they are used to predict the contribution of each atom to the total molecular energy.
-This relationship is explored in detail in \ref{subsec:total_E_sum_AEs}.
+This relationship is explored in detail in Subsection \ref{subsec:total_E_sum_AEs}.
 The scalability of ANI predictions is due to this representation of local atomic environments and, though it neglects long-range interactions, does well to predict molecular energies for systems much larger than those included in the training sets \cite{ani-1x, ani-2x}.
 
 The use of a robust descriptor is vital to creating a generalized representation of chemical environments, and serves as the basis for modeling chemical behavior.
@@ -254,7 +254,7 @@ However, a robust descriptor is just one component of a successful ML model; the
 The following section explores the architecture of ANI models, and how the fixed-length AEV is used as an input to produce predictions of molecular energy.
 
 
-\subsection{ANI model architecture}
+\subsection{ANI Model Architecture}
 \label{subsec:ANI_model_arch}
 
 The ANI models use a modular neural network architecture, where each unique atom type employs a species-specific feedforward network to learn the relationships between local atomic environment and the contribution of each atom in the system to the total molecular energy.
@@ -292,7 +292,7 @@ Flexible neural network architecture, along with the reliablity of AEV descripto
 There is still, however, one important aspect of the ANAKIN-ME methodology to explore: the dataset used in training, which is crucial to the transferability of ANI models.
 
 
-\subsection{The ANI datasets}
+\subsection{The ANI Datasets}
 \label{subsec:ANI_datasets}
 
 Machine-learned models perform, at best, to the limit of the data used in training.
@@ -342,6 +342,5 @@ Datasets listed here are available at other levels of theory, though $\mathrm{\o
 Specialized datasets for use with ANI-styled networks have pushed the boundaries of machine-learned interatomic potentials; ANI-1xnr \cite{ani-1xnr}, for example, was developed to model reactive potential energy surfaces, incorporating transition state geometries into the training data to improve predictive accuracy for bond-breaking and bond-forming processes.
 Such models have demonstrated significant improvements in modeling molecular reactivity, making them useful in studying chemical reactions---notably prebiotic chemistry, as discussed in Chapters \ref{chapter4} and \ref{chapter5}.
 
-\authorRemark{Consider writing a conclusion paragraph to segue into the meat of this dissy.}
 
 

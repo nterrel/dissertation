@@ -1,18 +1,86 @@
 \chapter{LAMMPS-ANI Early Earth Chemistry} 
 \label{chapter4}
 
-\section{CUDA-accelerated atomic environment vectors}
-\label{sec:cuaevs}
+The integration of machine-learned interatomic potentials into large-scale molecular dynamics (MD) simulations presents unique computational challenges. LAMMPS (Large-scale Atomic/Molecular Massively Parallel Simulator) \cite{lammps} is a natural choice for addressing these challenges due to its highly scalable parallel computing capabilities. LAMMPS can efficiently distribute workloads across multiple GPUs within a single node as well as across multiple compute nodes. This becomes essential for executing large-scale simulations with machine learning potentials (MLPs), which demand extensive computational resources due to the high cost of neural network evaluations. Additionally, LAMMPS’ modular and developer-friendly architecture facilitates the seamless incorporation of external potential models, making it an ideal platform for integrating ANI.
 
-\section{GPU parallelization}
-\label{sec:lammps-ani-gpu-parallelization}
+\section{The Interface of TorchANI and LAMMPS}
+\label{sec:lammps-ani}
+
+To enable ANI-driven molecular dynamics (MD) simulations, LAMMPS-ANI was developed as a dynamic shared library plugin that seamlessly integrates ANI models into LAMMPS. The computational workflow is structured into three main components: LAMMPS, the LAMMPS ANI C++ Interface, and the ANI neural network model. The process begins with LAMMPS handling the MD setup and distributing computational tasks across GPUs for efficient force calculations. The LAMMPS ANI C++ Interface then initializes the ANI model on each GPU, ensuring that atomic position data is correctly formatted and transferred to the neural network.
+
+During each simulation step, LAMMPS retrieves ghost atom positions from neighboring domains and updates the neighbor list, ensuring that all necessary atomic interactions are accounted for. This data, along with atomic identities, is processed by the ANI model, which constructs Atomic Environment Vectors (AEVs) to describe the local chemical environment. Ensuring the inclusion of ghost atoms within the AEV cutoff radius is critical to maintaining physically accurate predictions.
+
+The ANI model then computes potential energies and derives atomic forces via automatic differentiation, distributing these force contributions back across local and ghost atoms (be sure to define these). The processed outputs—molecular energy, atomic forces, and stress tensors—are passed back into LAMMPS, which integrates the equations of motion to advance atomic positions. This cycle continuously repeats, enabling long-timescale, large-scale MD simulations powered by ANI.
+
+By leveraging GPU parallelization and efficient data exchange, LAMMPS-ANI extends the applicability of machine-learned potentials to systems far larger than those used in training. The following chapter will demonstrate this capability through the large-scale "Early Earth" simulation, where ANI-driven MD is applied to a system containing tens of millions of atoms.
+
+\subsection{CUDA-Accelerated Atomic Environment Vectors}
+\label{subsec:cuaevs}
+
+Efficient Atomic Environment Vector (AEV) calculation is essential for scaling ANI-based molecular dynamics (MD) simulations to large systems. While PyTorch’s native implementation is well-suited for training, it becomes inefficient in high-performance MD due to slow tensor operations, excessive memory use in neighbor list construction, and computational bottlenecks in force calculations. To address these issues, the CUDA-accelerated AEV extension (CUAEV) was developed, significantly improving computational efficiency within LAMMPS.
+
+A major bottleneck in ANI simulations is neighbor list generation, which originally relied on a brute-force method that inefficiently scanned all atomic pairs within the cutoff. CUAEV introduces an optimized neighbor list algorithm that tracks only relevant atoms, drastically reducing memory usage for large systems. Additional optimizations, such as cell-list or Verlet-list algorithms, could further improve performance for extreme-scale simulations.
+
+Beyond neighbor list improvements, CUAEV replaces PyTorch’s tensor-based AEV computations with custom CUDA kernels optimized for memory-efficient parallel execution. These kernels enhance GPU performance by improving occupancy, minimizing atomic operations, and optimizing memory access patterns. This results in significantly faster force evaluations, making large-scale MD simulations computationally feasible. Forces in MD simulations are computed as the negative gradient of total energy with respect to atomic positions, requiring efficient automatic differentiation. CUAEV optimizes this backward pass by streamlining derivative calculations while maintaining numerical accuracy. It also introduces an optimized double-backward computation for force training, reducing redundant calculations and improving scaling efficiency.
+
+By integrating CUAEV into LAMMPS-ANI, these advancements enable ANI-based MD simulations with millions of atoms while preserving accuracy. These optimizations extend the practical application of ANI potentials, making them more viable for long-timescale simulations in materials science, biomolecular interactions, and high-temperature reactive environments.
+
+\subsection{GPU Parallelization}
+\label{subsec:lammps-ani-gpu-parallelization}
+
+Advancements in GPU parallelization have been crucial for enabling large-scale molecular dynamics (MD) simulations with machine-learned potentials like ANI. The integration of ANI into LAMMPS introduces substantial computational demands, requiring neural network evaluations and force calculations at every timestep. To address these challenges, several key optimizations have been implemented to maximize GPU efficiency and scalability across multi-GPU and multi-node systems.
+
+A major improvement was the adoption of Kokkos, 
+%[cite]
+a performance portability library that allows core LAMMPS operations—such as neighbor list generation and atomic position updates—to be performed directly on GPUs. By eliminating costly CPU-GPU data transfers, Kokkos ensures efficient in-place calculations, significantly reducing memory bottlenecks and improving computational efficiency for large-scale simulations. Another critical optimization is the use of batched matrix multiplication for neural network inference. Since ANI models use an ensemble of multiple networks for improved accuracy, evaluating each network separately would introduce redundancy and increase computational cost. Batching these calculations enhances GPU throughput, enabling ANI-based simulations to scale efficiently without excessive runtime overhead. To further improve performance in multi-node simulations, CUDA-aware Open MPI has been integrated to allow direct GPU-to-GPU communication, bypassing the CPU and reducing latency. Additional optimizations, such as minimizing buffer resizing overhead and extending run durations, have further improved efficiency, ensuring sustained high performance in extreme-scale simulations.
+
+Benchmark tests on molecular systems ranging from 100k to 100M atoms demonstrate that LAMMPS-ANI scales efficiently with increasing GPU counts, particularly for large systems where communication overhead is minimized. Compared to other machine-learned potentials, LAMMPS-ANI achieves significantly higher simulation speeds, making it a leading choice for high-performance molecular simulations. By fully leveraging GPU acceleration, optimized neural network inference, and efficient GPU-GPU communication, LAMMPS-ANI sets a new standard for scalable, machine-learned molecular simulations. These advancements enable large-scale studies in prebiotic chemistry, materials science, and biomolecular interactions, pushing the boundaries of computational chemistry with unprecedented efficiency.
 
 \section{ANI-1xnr}
 \label{sec:ani-1xnr}
+Reactive molecular dynamics simulations present a unique challenge in computational chemistry, requiring models that can accurately capture bond breaking and formation events without relying on predefined reaction coordinates. Classical force fields, while efficient, lack the flexibility to describe complex chemical transformations, and quantum mechanical methods, though highly accurate, are computationally prohibitive for large-scale simulations. To bridge this gap, ANI-1xnr \cite{ani-1xnr} was developed as an extension of the ANI family of neural network potentials, incorporating transition-state and reactive molecular data into its training set to enable more accurate modeling of chemical reactivity in both gas and condensed phases.
 
-ANI-1xnr paper: \cite{ani-1xnr}
+ANI-1xnr builds upon the active learning framework established in ANI-1x but extends it to a broader chemical space that includes transition-state geometries and high-energy molecular configurations. By incorporating transition-state structures and high-temperature molecular dynamics sampling, ANI-1xnr gains the ability to generalize beyond near-equilibrium molecular structures, making it suitable for simulations where reactive events are expected to occur spontaneously.
+
+One of the key advantages of ANI-1xnr is its ability to model reactive processes in condensed-phase environments without requiring explicit reaction coordinates. Traditional force fields impose constraints on bond formation and dissociation, often leading to artificially restricted reaction networks. In contrast, ANI-1xnr, as a data-driven neural network potential, learns the underlying physics of molecular interactions directly from quantum mechanical calculations, allowing it to predict spontaneous chemical transformations with high accuracy. This makes ANI-1xnr particularly well-suited for investigating complex reaction pathways in chemically rich environments such as planetary atmospheres, prebiotic chemistry, and high-temperature combustion reactions. \cite{ani-1xnr}
+
+Additionally, ANI-1xnr retains the scalability advantages of ANI models, enabling large-scale molecular dynamics simulations with millions of atoms while maintaining quantum mechanical accuracy. Its efficient implementation in LAMMPS-ANI facilitates GPU-accelerated reactive simulations, allowing for exploration of long-timescale chemical processes that would otherwise be inaccessible to traditional quantum chemistry methods.
+
+In the next section, we explore a specific application of ANI-1xnr: simulating the Miller-Urey experiment, a foundational study in prebiotic chemistry that demonstrated the abiotic synthesis of organic molecules under early Earth conditions. 
 
 \section{The Miller Experiment}
 \label{sec:miller_experiment}
 
-Miller experiment paper: \cite{miller_experiment}\\
+The Miller-Urey experiment, conducted in 1953 \cite{miller_experiment}, was a landmark study demonstrating the abiotic synthesis of organic molecules under early Earth conditions. By subjecting a gaseous mixture of methane ($\text{CH}_4$), ammonia ($\text{NH}_3$), hydrogen ($\text{H}_2$), and water ($\text{H}_2\text{O}$) to electrical discharges that simulated lightning, Miller and Urey observed the spontaneous formation of amino acids, nucleobase precursors, and other complex organic compounds. This provided crucial evidence that life's building blocks could emerge from simple molecular precursors given the right environmental conditions.
+
+Simulating the full chemical complexity of such a system using quantum mechanical methods is computationally infeasible due to the vast number of molecules and reaction pathways involved. ANI-1xnr offers an efficient alternative, enabling large-scale simulations that capture bond-breaking and bond-forming events with near-quantum accuracy. This was first demonstrated by Zhang et al. \cite{ani-1xnr} with a small-scale ANI-1xnr simulation of a 228-atom system, replicating key aspects of the Miller-Urey experiment. This benchmark study confirmed the model’s ability to reproduce radical-driven reactions, including hydrogen abstraction and the formation of small organic intermediates.
+
+\begin{flushleft}
+\begin{multiFigure}
+    \addFigure{0.5}{Images/early_earth/cropped_228_initial.png}
+    \addFigure{0.5}{Images/early_earth/cropped_228_final.png} \\
+\captionof{figure}[228 atom early earth system]{(A) Before and (B) after running dynamics on a 228 atom Miller experiment system for 2 ns.
+}
+\label{fig:228_atom_run}
+\end{multiFigure}
+\end{flushleft}
+
+Building upon this foundation, we systematically scaled up the Miller-Urey simulation, increasing system sizes from 228 atoms to 228,000 atoms, and finally to 22.8 million atoms---a scale never before attempted in reactive computational chemistry. At the 228,000-atom scale, we observed extended reaction networks, polymerization events, and the formation of key prebiotic molecules such as glycine, alanine, and formic acid. 
+
+\authorRemark{Talk here about how the 228 atom system could easily be visually inspected, but at this scale we can not hope to get useful information out of this by inspecting in VMD, leading us to developing GPU-accelerated data analysis protocols.}
+
+\begin{flushleft}
+\begin{multiFigure}
+    \addFigure{0.5}{Images/early_earth/228000-start.png}
+    \addFigure{0.5}{Images/early_earth/228000-after.png} \\
+\captionof{figure}[228,000 atom early earth system]{
+(A) Before and (B) after running dynamics on a 228,000 atom Miller experiment system for 2 ns.
+}
+\label{fig:228000_atom_run}
+\end{multiFigure}
+\end{flushleft}
+
+%[Put some molfind results from 228k system here, double check the factuality of the next sentence.] 
+The system also exhibited autocatalytic reaction cycles, which are thought to have played a role in the emergence of early biochemical systems.
+
+This simulation, the largest of its kind, revealed rare and complex reaction pathways that would be impossible to observe in smaller-scale studies. However, this immense computational effort introduced a new challenge: efficiently analyzing over a hundred terabytes of molecular trajectory data generated. The following chapter details the GPU-accelerated data analysis pipelines developed to extract meaningful chemical insights from this massive dataset, laying the groundwork for the next generation of large-scale simulations in prebiotic chemistry.

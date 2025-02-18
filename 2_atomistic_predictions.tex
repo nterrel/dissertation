@@ -12,7 +12,7 @@ This chapter serves as an assessment of the reliability of model predictions of 
 Section \ref{sec:ANI_predictions} contains a detailed look at the predictions of ANI neural networks from atomistic features to global properties and the measure of uncertainty used to determine the trustworthiness of a prediction.
 The following section, \ref{sec:uncertainty_atomic_energies}, details the search for an improved metric of reliability in atomistic predictions.
 
-\section{ANAKIN-ME predictions}
+\section{ANAKIN-ME Predictions}
 \label{sec:ANI_predictions}
 
 The ANI methodology provides a framework for atom-wise decomposition of molecular energies by using the atomic environment vector (AEV) representation to encode localized chemical interactions.
@@ -27,7 +27,7 @@ Though some partitioning schemes exist in quantum theory, such as Bader's Atoms 
 The energy decomposition approach taken by ANI is a learned relationship decided by the individual atomic neural networks during training, explained in greater detail in Subsection \ref{subsec:total_E_sum_AEs}.
 The uncertainty measure of predicted energies, referred to as the QBC, is defined in Subsection \ref{subsec:ANI_uncertainty}, followed by a case study in Subsection \ref{subsec:flaws_in_qbc} of the reliability of the QBC as a measure of empirical uncertainty in ANI predictions.
 
-\subsection{Molecular energy as a sum of atomic contributions}
+\subsection{Molecular Energy as a Sum of Atomic Contributions}
 \label{subsec:total_E_sum_AEs}
 
 The predicted molecular energy for a molecule input to an ANI model is computed as a sum of atomic contributions, given in Eqn. \ref{eq:total_E_sum_AEs}, where $E_{\text{Total}}$ is the molecular energy prediction and $\varepsilon_i$ is the atomic energy contribution for atom $i$.
@@ -94,19 +94,28 @@ Note here that the distributions have slightly different shapes, as well as bein
 The difference in the shapes of these distributions is an important aspect of analyzing the predictive uncertainty of ANI neural network potentials.
 Due to the differences in hyperparameters used in training, such as the removal of biases, the use of the GELU activation function \cite{gelu} continuous second derivatives improving the smoothness of predicted potential energy surfaces, and the addition of ground state atomic energies and a repulsive term, ANI-2xr will be used to explore trends in uncertainty in predictions by ANI neural networks. 
 
-\subsection{Uncertainty in ANI neural network potentials}
+\subsection{Uncertainty in ANI Neural Network Potentials}
 \label{subsec:ANI_uncertainty}
 
 ANI potential models use an ensemble of eight independently models, allowing for the estimation of predictive uncertainty.
-Predictive uncertainty has been measured in published models using $\hat{rho}$; the value 0.23 kcal/mol was empirically chosen for sampling structures with high-error energy predictions via query by committee (QBC) in the active learning process \cite{ani-1x}.
-The QBC, given in Eqn. \ref{eq:energy_qbc}, can be thought of as a binary classifier: 
+This uncertainty metric is frequently used in active learning strategies to guide data selection for model improvement.
+Predictive uncertainty has been measured in published models using $\hat{\rho}$; the value 0.23 kcal/mol was empirically chosen for sampling structures with high-error energy predictions via query by committee (QBC) in the active learning process \cite{ani-1x}.
+The QBC value, given in Eqn. \ref{eq:energy_qbc}, can be thought of as a binary classifier: molecules with QBC values above 0.23 kcal/mol are highly-uncertain predictions and shouldn't be trusted, while values below 0.23 kcal/mol are trustworthy, agreed upon values by the ensemble.
 
 \begin{equation}
 \rho = \frac{\sigma_{E_{\text{Total}}}}{\sqrt{N_{\text{atoms}}}}
 \label{eq:energy_qbc}
 \end{equation}
 
-Segue into the atomic energy prediction per atom-type 
+This normalization accounts for the size of the molecule, ensuring that uncertainty values remain comparable across different molecular systems. 
+In the development of ANI-1x, a threshold value of 0.23 kcal/mol was empirically chosen as the criterion for selecting molecules with high-energy uncertainty for further active learning \cite{ani-1x}.
+However, while QBC serves as a useful uncertainty metric for guiding active learning, it introduces a size-dependent limitation. Because $\sqrt{N_\text{atoms}}$ appears in the denominator, molecules with a large number of atoms can exhibit low uncertainty values, even if individual atomic energy predictions are highly uncertain. 
+This means that large structures may be misclassified as “low-error” molecules despite containing regions of high uncertainty in their atomic energy contributions. 
+Consequently, high-error structures may slip through the active learning process, leading to gaps in the training data for larger molecules.
+
+To explore this issue further, atomic energy predictions can be examined on a per-atom-type basis. 
+Figure \ref{fig:2xr_comp6v1_mean-ae-per-atomtype} presents the distribution of mean atomic energy predictions using the ANI-2xr model on the COMP6v1 benchmark set. 
+This per-atom decomposition allows for a finer-grained analysis of uncertainty, revealing how specific atomic environments contribute to total energy predictions and where potential weaknesses in the model may arise.
 
 \begin{figure}[H]
     \centering
@@ -115,17 +124,23 @@ Segue into the atomic energy prediction per atom-type
     \label{fig:2xr_comp6v1_mean-ae-per-atomtype}
 \end{figure}
 
-\subsection{Exploration of the flaws in measuring uncertainty via predicted total energy}
+By analyzing per-atom energy contributions, it becomes possible to refine uncertainty quantification methods beyond QBC, addressing the size-dependent bias and improving the selection of high-error molecules for retraining in future ANI models.
+
+\subsection{Exploration of the Flaws in Measuring Uncertainty via Predicted Total Energy}
 \label{subsec:flaws_in_qbc}
 
-Make sure to put some words here.
-Size dependence of the QBC. \\
-Show the example of m-epoxide vs long-epoxide here. Remake those RDKit graphs or consider making vmd figures. 
-Also probably want to include some kind of table.
+A clear example of size dependence in ANI uncertainty estimation can be illustrated by considering a small molecule with a high query-by-committee (QBC) value. Suppose we start with a simple molecule, such as propane (C\textsubscript{3}H\textsubscript{8}), where a particular atomic region exhibits a relatively high uncertainty in its predicted atomic energies. Because QBC normalizes by the square root of the number of atoms $\left(\sqrt{N_\text{atoms}} \right)$, the uncertainty estimate is influenced heavily by molecular size.
 
-\section{Uncertainty of atomic energy predictions}
+Now, consider a structurally similar but larger molecule, \authorRemark{REWRITE THIS TO THE m-epoxide EXAMPLE ... } such as undecane (C\textsubscript{11}H\textsubscript{24}), which is derived from propane by extending one of its methyl functional groups into a 10-carbon chain. Despite this significant increase in molecular size, the region of high atomic uncertainty in the original molecule still exists—for example, in the same local chemical environment near the initial site of uncertainty. However, because $\left(\sqrt{N_\text{atoms}} \right)$ is much larger, the total molecular uncertainty value ($\rho$) is now lower, even though the model's uncertainty in that specific region has not improved.
+
+This example demonstrates how large molecules can exhibit deceptively low QBC values, making it more difficult to identify high-error structures in active learning. As a result, potentially problematic regions of uncertainty can be overlooked in training set refinement, leading to overconfidence in predictions for large systems. Such effects highlight the need for alternative uncertainty quantification methods that account for localized atomic errors rather than relying solely on global molecular uncertainty metrics.
+
+As the energy of molecules is predicted as a sum of atomic contributions---and therefore, one could say, the networks are actually predicting atomic energies---the first exploration into an atomistic uncertainty method was into the atomic energy contribution predicted for each atom.
+
+\section{Uncertainty of Atomic Energy Predictions}
 \label{sec:uncertainty_atomic_energies}
 
+Predictive uncertainty in ANI neural network potentials extends beyond total molecular energy predictions, affecting atomic energy contributions on a per-atom basis. The standard deviation in atomic energy predictions across an ensemble of ANI models provides insight into how confidently the model assigns energetic contributions to individual atoms. Figure \ref{fig:2xr_comp6v1_stdev-ae-per-atomtype} illustrates the distribution of atomic energy standard deviations for different atom types (H, C, N, O) using the ANI-2x model on the COMP6v1 benchmark set. Higher uncertainty in atomic energy predictions often correlates with underrepresented chemical environments in the training data, where the model struggles to generalize beyond learned patterns. Additionally, atoms in highly strained or reactive regions tend to exhibit greater variance, reflecting the challenge of accurately capturing energy contributions in chemically complex systems.
 
 \begin{figure}[H]
     \centering
@@ -134,14 +149,9 @@ Also probably want to include some kind of table.
     \label{fig:2xr_comp6v1_stdev-ae-per-atomtype}
 \end{figure}
 
-And also put some words here.
-\bigskip
+Higher uncertainty in atomic energy contributions often arises in chemically complex or underrepresented environments in the training data. While carbon and oxygen atoms typically exhibit lower variance due to their frequent occurrence in organic molecules, hydrogen atoms display a broader spread, reflecting their dependence on local bonding environments. This is particularly relevant in systems where heteroatoms or extended conjugation patterns influence local electronic structure, leading to higher variability in atomic energy assignments.
+An illustrative example of this phenomenon can be seen in methane (CH\textsubscript{4}), which is a highly symmetric molecule with four chemically equivalent hydrogen atoms and a single carbon center. Figure \ref{fig:ch4_stdev_ae} presents the standard deviation in atomic energy contributions for CH\textsubscript{4} across the ANI-2xr model ensemble, compared to the total energy uncertainty distribution in the 1x-first test set.
 
-
-
-
-I don't know why this figures is printing weirdly
-\\
 \begin{flushleft}
 \begin{multiFigure}
     \addFigure{0.31}{Images/ch4.png}
@@ -157,7 +167,10 @@ the red lines show the standard deviation in CH\textsubscript{4} total energy (B
 \end{multiFigure}
 \end{flushleft}
 
+While total molecular energy predictions for CH\textsubscript{4} remain relatively low in uncertainty, the per-atom standard deviations reveal higher variability in atomic energy contributions, particularly in hydrogen. This suggests that even in highly symmetric molecules, ANI's per-atom energy assignments may be non-trivial, introducing potential sources of error in energy decomposition analyses.
 
+The per-atom uncertainty in ANI models is not only influenced by the training data but also by learned covariances across network predictions. The atomic energy contributions predicted by different models within the ANI ensemble exhibit correlated variations, where changes in one atomic energy may be systematically offset by adjustments in another.
+For example, Table \ref{tbl:ch4_AEs} reports the atomic energy contributions predicted by each model in the ANI-2xr ensemble for CH\textsubscript{4}. While the individual atomic energies fluctuate across models, the sum of atomic energies remains tightly constrained, with a standard deviation an order of magnitude lower than that of the individual atomic contributions.
 
 % Tables suck, but this helped me align columns and headers separately:
 \begin{table}[hbt]
@@ -192,11 +205,14 @@ Standard deviation &  11.7621 &  2.9412 &  0.0775 &  0.0775 \\
 \end{tabularx}
 \end{table}
 
+This covariance, defined in Eqn. \ref{eq:covariance}, reflects a learned compensation mechanism where certain atomic energy predictions systematically adjust in response to others.
+
 \begin{equation}
     \label{eq:covariance}
     \text{cov}(x, y) = \mathbb{E}[(x - \mathbb{E}[x])(y - \mathbb{E}[y])]
 \end{equation}
 
+This suggests that ANI models learn relative atomic energy distributions, where variations in one atom's contribution are counterbalanced by adjustments in others to maintain a stable total molecular energy. To better understand this effect, Figure \ref{fig:ch4_covariance} presents covariance matrices of atomic energy contributions for CH\textsubscript{4} and pentane (C\textsubscript{5}H\textsubscript{12}), highlighting correlation patterns between atomic contributions in molecules of different sizes.
 
 \begin{flushleft}
 \begin{multiFigure}
@@ -213,6 +229,8 @@ Standard deviation &  11.7621 &  2.9412 &  0.0775 &  0.0775 \\
 \end{multiFigure}
 \end{flushleft}
 
+This compensatory behavior suggests that ANI models do not learn absolute atomic energies in isolation, but rather relative energy distributions that maintain a consistent total molecular energy. As a result, variations in one atomic contribution are often counterbalanced by adjustments in neighboring atoms, preserving overall energetic stability while allowing individual atomic predictions to fluctuate.
+These covariance effects contribute to the observed size dependence in ANI model uncertainty, where molecular energy predictions remain stable while per-atom uncertainties fluctuate.
 This behavior is due to learned covariances across networks, where, for example, carbon atomic energies learn to offset hydrogen energy contributions in the training process. This relationship is defined in Eqn. \ref{eq:total_e_covariance}.
 
 \begin{equation}
@@ -220,15 +238,22 @@ This behavior is due to learned covariances across networks, where, for example,
     \label{eq:total_e_covariance}
 \end{equation}
 
+This covariance-driven redistribution of uncertainty is a key challenge in using ANI for uncertainty-aware simulations, as it impacts force predictions, molecular dynamics stability, and error estimation in out-of-sample predictions.
 
-\section{Need for a practical, physical quantity to estimate uncertainty}
+\section{Need for a Practical, Physical Quantity to Estimate Uncertainty}
 \label{sec:practical_physical_quantity_for_uncertainty}
 
-Looking for a correlation between the energy error and the predictive uncertainty of a given atomic quantity.
+The predictive uncertainty in ANI models has primarily been examined through atomic energy distributions, but these values lack intrinsic physical meaning beyond their role in reproducing the total molecular energy. A fundamental limitation of atomic energy assignments is their model dependence—each of the eight neural networks in the ensemble learns a slightly different decomposition of molecular energy, leading to inconsistencies in per-atom contributions. This variability makes atomic energies ill-suited as a reliable uncertainty measure, as they do not correspond to an independently verifiable physical property.
 
-The ANI models excel at predicting molecular energies, but have also been trained to predict other properties, most notably forces, which are computed as a the second derivative of the potential energy surface. 
-Training this model 
+A more robust alternative lies in atomic forces, which ANI models also predict as derivatives of the potential energy surface, shown in Equation \ref{eq:force_dE}. 
+\begin{equation}
+    \vec{F} = -\nabla E
+    \label{eq:force_dE}
+\end{equation}
 
+Unlike atomic energies, forces directly correspond to the physical structure and motion of molecules, as they describe how atoms interact under the influence of a potential. Forces dictate molecular geometry, vibrational frequencies, reaction pathways, and dynamics, making them a natural choice for evaluating model reliability. Since ANI is trained to approximate the true quantum mechanical PES, its force predictions serve as an indirect measure of how well the model captures the curvature of the PES, providing insight into both local stability and model confidence.
+
+The combined energy and force loss function used in ANI training, given in Eqn. \ref{eq:force_loss}, minimizes the molecular energy error while also penalizing discrepancies in predicted atomic forces. This introduces an additional constraint that enhances the physical reliability of the learned potential energy surface:
 
 \begin{equation}
 \mathcal{L}_{\text{E \& }\vec{\text{F}}} = 
@@ -241,7 +266,11 @@ Training this model
 \frac{\sum_{j=1}^{N_{\text{atoms}}} 
 \left( \vec{f}_{\text{ANI}}^{j} - \vec{f}_{\text{QM}}^{j}\right)^2}{N_{\text{atoms}}} 
 \right) \right]
+\label{eq:force_loss}
 \end{equation}
 
-Where 
+This loss function consists of two key components that work together to optimize both molecular energy and atomic force predictions. The first component addresses energy loss by computing the mean squared error (MSE) between the predicted molecular energy and the reference quantum mechanical energy. To ensure that large molecules do not disproportionately influence the optimization process, the loss is normalized by the square root of the number of atoms in the system. This normalization maintains consistency in model performance across different molecular sizes. The second component focuses on force loss, which is calculated as the difference between the predicted atomic forces and the quantum mechanical reference forces. Since each atom experiences forces that determine molecular motion and stability, the force loss is averaged over all atoms in the molecule, treating each force vector as an independent target for training. To balance the contributions of energy and force errors, a scaling factor of 0.1 is introduced, preventing one component from dominating the learning process. This ensures that the model refines both energy and force predictions simultaneously, leading to a more physically meaningful representation of molecular interactions.
 
+By training ANI to predict forces along with energies, we gain access to a physically meaningful metric for uncertainty estimation. Since forces describe how gradients of the potential energy surface vary across atomic positions, their accuracy directly reflects the model's ability to approximate quantum mechanical interactions.
+When an ANI model encounters a molecule outside of its training distribution, its force predictions may become erratic or inconsistent across the ensemble, reflecting the model’s lack of confidence in extrapolating beyond familiar chemical environments. By analyzing the standard deviation in force predictions across the ANI ensemble, we can construct a size-independent measure of uncertainty that is directly tied to physical observables rather than arbitrary atomic energy assignments.
+This insight forms the foundation for the next chapter, where we explore how force-based uncertainty metrics can be used to assess ANI model reliability in molecular simulations, and how these methods compare to traditional QBC-based energy uncertainty approaches.
