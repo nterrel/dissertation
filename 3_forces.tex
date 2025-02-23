@@ -1,47 +1,89 @@
 \chapter{Uncertainty in atomic force predictions}
 \label{chapter3}
 
-The reliability of machine-learned interatomic potentials hinges not only on their accuracy in reproducing reference quantum mechanical data but also on their ability to quantify uncertainty in predictions. While ensemble-based methods, such as those used in ANI, provide an empirical means of assessing predictive confidence, the search for a robust, physically meaningful uncertainty measure remains an open problem in atomistic machine learning.
+The reliability of machine-learned interatomic potentials depends not only on the accuracy of reproducing reference quantum mechanical data but also on the ability of such models to quantify uncertainty in predictions, as the desired applications of such ML models are for (large) systems that ground-truth data is inaccessible due to prohibitive scaling and the limits of computational efficiency.
+Ensemble-based methods, such as ANI models, offer an empirical approach to assessing predictive confidence; however, a robust, universally applicable, and physically meaningful uncertainty measure for atoms of different species remains a challenge.
+In the broader field of deep learning, uncertainty quantification has been explored through various strategies, including ensemble averaging \cite{optimal_ensemble_averaging_naftaly, ensemble_deep_learning_review_ganaie}, scalable uncertainty estimation methods \cite{scalable_uncertainty_scalia, scalable_uncertainty_lakshminarayanan}, and dropout-based implementations \cite{dropout1, dropout2, uncertainty_quantification_dropout_wen} to improve predictive capabilities by temporarily removing nodes from the input and hidden layers. 
 
-In the broader field of deep learning, uncertainty quantification has been explored through various strategies, including ensemble averaging \cite{optimal_ensemble_averaging_naftaly}, dropout-based approximations \cite{uncertainty_quantification_dropout_wen}, and scalable uncertainty estimation methods \cite{scalable_uncertainty_scalia, scalable_uncertainty_lakshminarayanan}. These approaches aim to distinguish between epistemic uncertainty, which arises from model limitations and can be reduced with additional training data, and aleatoric uncertainty, which reflects inherent noise in the data itself. When applied to atomistic simulations, these principles suggest that uncertainty estimation must capture both model limitations and physical constraints imposed by molecular interactions \cite{uncertainty_atomistic_ml_peterson}.
+These approaches aim to distinguish between epistemic uncertainty, which arises from model limitations and can be reduced with additional training data, and aleatoric uncertainty, which reflects inherent noise in the data itself. 
+In atomistic simulations, these principles suggest that uncertainty estimation must capture both model limitations and physical constraints imposed by molecular interactions \cite{uncertainty_atomistic_ml_peterson}.
+Within the domain of neural network potentials, ensembles have been widely used to quantify predictive confidence, offering a direct measure of variance in model outputs \cite{uncertainty_of_nnp_ensembles_kahle}. 
+However, most existing uncertainty estimation techniques focus on energy predictions, rather than on the fundamental physical quantities that dictate molecular behavior. 
+Since forces define the curvature of the potential energy surface, an uncertainty measure derived from force predictions would provide deeper insight into model reliability and transferability.
 
-Within the domain of neural network potentials, ensembles have been widely used to quantify predictive confidence, offering a direct measure of variance in model outputs \cite{uncertainty_of_nnp_ensembles_kahle}. However, most existing uncertainty estimation techniques focus on energy predictions, rather than on the fundamental physical quantities that dictate molecular behavior—atomic forces. Since forces define the curvature of the potential energy surface, an uncertainty measure derived from force predictions would provide deeper insight into model reliability and transferability.
-
-This chapter explores uncertainty estimation in atomistic machine learning models, reviewing established methods for predictive confidence assessment and their applicability to atomic force predictions. By leveraging insights from ensemble deep learning \cite{ensemble_deep_learning_review_ganaie} and explainable uncertainty quantifications \cite{uncertainty_quantification_yang}, we seek to determine whether force-based uncertainty metrics offer a more practical and scalable alternative to traditional energy-based uncertainty measures.
+This chapter explores uncertainty estimation in ANI models without altering the already well-performing neural network model architecture. 
+We seek an explainable \cite{uncertainty_quantification_yang} uncertainty quantification metric to determine whether force-based uncertainty offers a more practical and scalable alternative to traditional energy-based uncertainty measures.
 
 
 \section{Potential Solution}
 \label{sec:uncertainty_potential_solution}
-In the search for a reliable atomistic metric to estimate uncertainty in molecular energy predictions, we face a fundamental challenge: the true energy of a system is unknown during inference, making direct error quantification impossible. Instead, we require a proxy quantity—one that can be predicted by the network and used as an internal measure of confidence, without explicit reference to a ground truth.
 
-Atomic energies, while conceptually appealing, have proven unsuitable for this purpose. Due to their model-dependent decomposition, different networks in the ANI ensemble learn distinct atomic energy contributions, leading to inconsistent assignments across models. Attempts to reduce the uncertainty in these values inevitably compromise the accuracy of the total molecular energy, demonstrating that atomic energy predictions are not physically meaningful on their own.
+In the search for a reliable atomistic metric to estimate uncertainty in molecular energy predictions, we face a fundamental challenge: the true energy of a system is unknown during inference, making direct error quantification impossible. 
+Instead, we require a proxy quantity, one that can be predicted by the network and used as an internal measure of confidence without explicit reference to a ground truth.
+Atomic energies, while conceptually appealing, proved unsuitable for this purpose; due to the model-dependent energy decomposition, different networks in the ANI ensemble learn distinct atomic energy contributions, leading to inconsistent assignments across models.
+Attempts to reduce the uncertainty in predicted atomic energies in a purely data-driven ML model inevitably compromises the accuracy of the total molecular energy prediction.
 
-For an uncertainty measure to be viable, it must be supported by fundamental physical principles and computed in a streamlined manner within the existing neural network framework. One such quantity stands out: atomic forces. Unlike atomic energies, forces are directly governed by quantum mechanical principles, as they correspond to the gradient of the potential energy surface. Because every atom in a molecular system experiences forces, this quantity is universally defined, offering a more consistent target for uncertainty estimation.
+For an uncertainty measure to be viable, it must be supported by fundamental physical principles and computed in an explainable manner within the existing neural network framework. 
+Unlike atomic energies, forces are directly governed by quantum mechanical principles, as they correspond to the gradient of the potential energy surface with respect to atomic coordinates (Eqn. \ref{eq:force_dE}). 
+Because every atom in a molecular system experiences forces, this quantity is universally defined---except in the case of a true global minimum, which is inconsequential for MD applications---offering a more consistent target for uncertainty estimation.
 
-An alternative approach could involve using dipole moments as an uncertainty metric, given their sensitivity to electronic structure and molecular geometry. However, dipoles present two key limitations: (1) they do not exist for certain molecular systems, such as nonpolar molecules, and (2) they are global properties, meaning they do not offer localized atomic-level uncertainty estimates. In contrast, atomic forces remain well-defined even in equilibrium, with only minor fluctuations in magnitude depending on molecular stability. Since molecular dynamics simulations typically explore non-equilibrium conformations, the forces acting on atoms are almost always nonzero, reinforcing their utility as a generalizable measure of model confidence.
+A considered alternative approach could involve using dipole moments as an uncertainty metric, given their sensitivity to electronic structure and molecular geometry.
+However, dipoles present two key limitations: they do not exist for certain molecular systems, such as nonpolar molecules, and they are global properties, meaning they do not offer localized atomic-level uncertainty estimates.
+In contrast, atomic forces remain well-defined even in near-equilibrium geometries, with only minor fluctuations in magnitude depending on molecular stability.
 
-Thus, forces present a promising avenue for quantifying predictive uncertainty at the atomistic level. By leveraging force predictions across the ANI ensemble, we can explore whether the variability in these values provides a meaningful, physically grounded measure of model reliability.
+Since molecular dynamics simulations almost exclusively explore non-equilibrium conformations, the forces acting on atoms are virtually always nonzero, reinforcing their utility as a generalizable measure of model confidence.
+Even in the case of global equilibrium, models should be tuned to agree on atomic forces predicted to be equal to zero. 
+Thus, forces present a promising avenue for quantifying predictive uncertainty at the atomistic level and can be used to explore whether the variability in these values provides a meaningful, physically grounded measure of model reliability.
 
 
 \subsection{Forces}
 \label{subsec:forces}
 
-Atomic forces provide a direct means of assessing the landscape of the potential energy surface (PES), making them a natural candidate for evaluating uncertainty in ANI predictions. Since forces correspond to the gradient of energy with respect to atomic positions, they encode local curvature information that is critical for modeling molecular behavior, including geometry optimizations, vibrational properties, and molecular dynamics simulations. Unlike atomic energy decompositions, which lack a strict physical interpretation, atomic forces are observable, well-defined, and physically meaningful across all molecular systems.
+Atomic forces provide a direct means of assessing the landscape of the potential energy surface (PES), making them a natural candidate for evaluating uncertainty in ANI predictions. 
+Since forces correspond to the gradient of energy with respect to atomic positions, they encode local curvature information that is critical for modeling molecular behavior, including geometry optimizations, vibrational properties, and molecular dynamics simulations. 
+Unlike atomic energy decompositions, which lack a strict physical interpretation, atomic forces are observable, well-defined, and physically meaningful across all molecular systems.
 
-Beyond their role in defining molecular motion, atomic forces also provide a localized and physically interpretable measure of model reliability. Unlike total energy, which is a global property influenced by all atoms in a system, forces act on individual atoms and directly govern how they respond to their immediate chemical environment. This atom-wise resolution makes forces particularly valuable for assessing model performance at a finer scale, where uncertainty can be linked to specific atomic interactions rather than an aggregate molecular quantity. Additionally, because forces inherently reflect the steepness and shape of the potential energy surface, they provide insight into how well the model captures subtle variations in bonding, steric effects, and reaction coordinates—critical aspects that define the accuracy of interatomic potentials.
+Forces act on individual atoms and directly govern how they respond to their immediate chemical environment. This atom-wise resolution makes forces particularly valuable for assessing model performance at a finer scale, where uncertainty can be linked to specific atomic interactions rather than a global molecular quantity. 
+Because forces inherently reflect the steepness and shape of the potential energy surface, they provide insight into how well the model captures subtle variations in bonding, steric effects, and reaction coordinates---critical aspects that define the accuracy of interatomic potentials.
 
-Figure \ref{fig:2xr_comp6v1-forces-cos_sim} presents a per-model cosine similarity analysis of atomic force predictions from the ANI ensemble compared to reference DFT forces. This metric captures the directional agreement between predicted and true force vectors, illustrating that ANI models, in nearly all cases, predict forces that align closely with the correct direction on the PES. Even in cases where predictions deviate, these errors tend to occur in low-error structures near equilibrium, where the magnitude of the force vector is already small. This suggests that while absolute force magnitudes may vary slightly across the ensemble, the network reliably captures the qualitative features of the PES, ensuring that molecular geometries and reaction pathways remain well-described.
+The first approach taken in assessing model agreement in predicted forces was to compute the cosine similarity of the force vector predicted, for each atom, by each model in the ensemble. This relationship is given in Equation \ref{eq:cosine_similarity}.
+
+\begin{equation}
+\text{cosine similarity} = \frac{\vec{f_1} \cdot \vec{f_2}}{\max(\|\vec{f_1}\|_2 \cdot \|\vec{f_2}\|_2, \epsilon)}
+\label{eq:cosine_similarity}
+\end{equation}
+
+Here, two force vectors, $\vec{f_1}$ and $\vec{f_2}$, which point in exactly the same direction would have a cosine similarity of 1, orthogonal vectors would have a value of 0, and anti-parallel vectors would have a similarity value of -1.
+The parameter $\epsilon$ is a small number ($10^{-8}$) to prevent the possibility of division by zero. 
+Figure \ref{fig:2d_2xr_comp6v1-forces-cos_sim} presents a per-model cosine similarity analysis of atomic force predictions from COMP6V1 benchmark dataset across the ANI-2xr ensemble compared to reference DFT forces. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Images/2xr_forces/cos_sim-hist2d-insert.png}
+    \caption[2D histogram of cosine similarity measure of predicted atomic force vectors]{ \authorRemark{Give these different captions} \\
+    Cosine similarity between ANI predicted forces (per-model) versus the DFT reference forces on the COMP6v1 benchmark dataset.
+    }
+    \label{fig:2d_2xr_comp6v1-forces-cos_sim}
+\end{figure}
+
+This metric captures the directional agreement between predicted and true force vectors, illustrating that ANI models, in nearly all cases, predict forces that align closely with the correct direction on the PES. 
+Even in cases where predictions deviate, these errors tend to occur in low-error structures near equilibrium, where the magnitude of the force vector is very small. 
+This suggests that while absolute force magnitudes vary across the ensemble, the network reliably captures the qualitative features of the PES.
+The cosine similarity data is re-plotted in three dimensions in Figure \ref{fig:2xr_comp6v1-forces-cos_sim}, further demonstrating the directional agreement of predicted atomic forces.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Images/2xr_forces/2xr_comp6v1_force-cosine_sim-bar3d.png}
-    \caption[Per-model cosine similarity measure of predicted atomic force vectors]{
+    \caption[3D histogram of cosine similarity measure of predicted atomic force vectors]{
     Cosine similarity between ANI predicted forces (per-model) versus the DFT reference forces on the COMP6v1 benchmark dataset.
     }
     \label{fig:2xr_comp6v1-forces-cos_sim}
 \end{figure}
 
-One of the key advantages of using force predictions for uncertainty quantification is their sensitivity to local errors in the PES. Unlike total energy, which is a global property of a molecule, atomic forces provide spatially resolved information that reflects the stability of individual atoms within their local chemical environment. This enables a more granular assessment of uncertainty, where high-uncertainty atoms may indicate regions of the molecule that are poorly represented in the training data. Additionally, because forces influence molecular motion in dynamics simulations, uncertainty in force predictions may translate directly to instabilities in long-time simulations, making it imperative to assess their reliability.
+One of the key advantages of using force predictions for uncertainty quantification is their sensitivity to local errors in the PES. 
+Atomic forces provide spatially resolved information that reflects the stability of individual atoms within their local chemical environment. 
+This enables a more granular assessment of uncertainty, where high-uncertainty atoms may indicate regions of the molecule that are poorly represented in the training data. 
+Additionally, because forces influence molecular motion in dynamics, uncertainty in force predictions may translate directly to instabilities in simulations, making it important to assess their reliability in MD applications.
 
 Another consideration is the role of ensemble-based predictions in force uncertainty estimation. In ANI, force vectors are obtained independently from each model within the ensemble, meaning that variations in force predictions across the ensemble provide a direct measure of model disagreement. This disagreement can be leveraged as an uncertainty metric, where a high standard deviation in force predictions signals regions of chemical space where the model lacks confidence. Importantly, unlike atomic energies, which exhibit compensatory behavior across the ensemble (as discussed in Section \ref{sec:uncertainty_atomic_energies}), force predictions do not sum to a fixed total value. This means that force uncertainty is not artificially constrained, making it a more reliable measure of true model uncertainty rather than an artifact of network training.
 
@@ -98,7 +140,9 @@ This normalization helps to mitigate the absolute magnitude dependence, but stil
 
 To further refine the approach, we introduced an alternative measure: the relative range (Eqn. \ref{eq:rel_range}), which captures the spread of predicted force magnitudes across the ensemble, relative to the mean force magnitude:
 \begin{equation} 
-\text{Relative range} = \frac{\max(|\vec{F}|) - \min(|\vec{F}|)}{\mu_{|\vec{F}|}} 
+\text{Relative range} = 
+\frac{\max \left( |\vec{F}| \right) - \min \left( |\vec{F}| \right)}
+                            {\mu_{|\vec{F}|}} 
 \label{eq:rel_range}
 \end{equation}
 
@@ -174,7 +218,25 @@ Having established that atomic force uncertainty serves as a reliable indicator 
 
 To this end, we began developing a tool called Atom Isolator, designed to automatically identify and extract high-uncertainty atoms from molecular structures. The goal of this approach is to refine the active learning process by targeting specific atomic environments rather than entire molecular conformations, thereby improving model accuracy with a smaller, more informative dataset. The first step in this process is identifying high-uncertainty atoms. Using the maximum deviation in force magnitude prediction as a metric, we flag atoms where ensemble disagreement exceeds a given threshold, indicating unreliable model predictions. 
 
-These flagged atoms represent regions where the model is least confident in its force predictions and are therefore the most critical areas to improve. Once these high-uncertainty atoms are identified, the next challenge is truncating the molecular environment in a way that preserves relevant chemical context. Extracting only the flagged atoms would result in a loss of structural information necessary for meaningful predictions. To prevent this, Atom Isolator defines a tunable cutoff radius around each high-uncertainty atom, set to approximately 1.5 times the AEV cutoff. This ensures that enough of the local atomic environment is retained to maintain chemically meaningful interactions, while avoiding unnecessary contributions from well-learned regions of the molecule. Finally, these extracted atomic environments are treated as independent molecular fragments, which can be reintroduced into the training process. By isolating and refining only the most uncertain atomic regions, this approach prioritizes data sampling where the model struggles most, rather than redundantly retraining on entire molecular structures that contain many well-predicted regions. This focused data augmentation strategy has the potential to significantly reduce dataset size while maintaining or even improving predictive accuracy.
+These flagged atoms represent regions where the model is least confident in its force predictions and are therefore the most critical areas to improve. Once these high-uncertainty atoms are identified, the next challenge is truncating the molecular environment in a way that preserves relevant chemical context. Extracting only the flagged atoms would result in a loss of structural information necessary for meaningful predictions. To prevent this, Atom Isolator defines a tunable cutoff radius around each high-uncertainty atom, set to approximately 1.5 times the AEV cutoff. 
+An example of this is given in Figure \ref{fig:atom_isolator}.
+
+\begin{flushleft}
+\begin{multiFigure}
+\begin{centering}
+    \addFigure{0.4}{Images/atom_isolator/c2h3n7o2-cropped.png}
+    \addFigure{0.4}{Images/atom_isolator/c2h3n7o2_highlighted-cropped.png} 
+    \addFigure{0.4}{Images/atom_isolator/c2h3n7o2_11isolator-cropped.png}
+    \addFigure{0.4}{Images/atom_isolator/c2h3n7o2_2isolator-cropped.png} \\
+\captionof{figure}[Example output from the atom isolator]{(A) C\textsubscript{2}H\textsubscript{3}N\textsubscript{7}O\textsubscript{2} molecule from ANI dataset, (B) atoms with a high force uncertainty value, and the atom isolator output from (C) atom 2 and (D) atom 11. Note that some of the molecule is truncated at the AEV cutoff in either case; refer to Fig. \ref{fig:aev_radius} for an example of this cutoff radius.
+}
+\label{fig:atom_isolator}
+\end{centering}
+\end{multiFigure}
+\end{flushleft}
+
+\authorRemark{This ensures that enough of the local atomic environment is retained to maintain chemically meaningful interactions, while avoiding unnecessary contributions from well-learned regions of the molecule. Finally, these extracted atomic environments are treated as independent molecular fragments, which can be reintroduced into the training process. By isolating and refining only the most uncertain atomic regions, this approach prioritizes data sampling where the model struggles most, rather than redundantly retraining on entire molecular structures that contain many well-predicted regions. This focused data augmentation strategy has the potential to significantly reduce dataset size while maintaining or even improving predictive accuracy.}
+
 
 The process of isolating high-uncertainty atomic environments presents an opportunity to search for reduced molecular representations that retain the key chemical patterns associated with high-uncertainty predictions. Instead of retraining the ANI model on large, computationally expensive structures, we can use these fragmented environments to identify simpler molecular motifs that capture the essential bonding interactions contributing to uncertainty. This approach aligns with broader trends in molecular AI research, where efforts to develop compressed molecular representations have led to advances in AI-driven drug discovery \cite{mol_reps_in_AI_drug_discovery_david} and systematic chemical pattern matching through SMILES and SMARTS representations \cite{SMILES_pair_encoding_li, mol_patterns_SMARTS_schmidt, automated_fragment_gen_smiles_bilsland}.
 
