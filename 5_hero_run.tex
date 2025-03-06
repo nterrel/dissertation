@@ -9,6 +9,7 @@ This temperature cycle was selected based on experimental and computational stud
 The simulation encompassed a massive 22.8 million atoms, making it one of the largest reactive MD simulations ever conducted. ANI-1xnr, a machine-learned interatomic potential, provided near-quantum accuracy while maintaining the efficiency required to run such an extensive system. However, running a simulation at this scale posed significant computational challenges.
 The next sections detail the strategies developed to process, analyze, and extract meaningful insights from this unprecedented dataset, including graph-based molecular identification, GPU-accelerated trajectory filtering, and large-scale clustering techniques.
 
+
 \section{Molfind}
 \label{sec:molfind}
 
@@ -45,6 +46,18 @@ In particular, if nodes were not distinctly labeled by their atomic species, or 
     \label{fig:graph_matching}
 \end{figure}{}
 
+The next challenge was extracting molecules from this massive pool of data.
+If we wanted to look at any specific structures, we need to open the trajectory and pull out the coordinates.
+However, this is difficult, because the trajectory cannot be loaded into memory, as there are 45 that each occupy more than 2 terabytes on disk.
+MDTraj requires two components to load frames: the trajectory file (we use \verb|.dcd|) and the topology (\verb|.pdb|, by default).
+Typically, a topology indicates which of the atoms belong to which molecules, because in classical MD there is no change in bonding throughout the simulation. 
+Here, however, we are just using the topology to reference atomic indices.
+Using the default loader, the topology in \verb|.pdb| format required 468 seconds (7.8 minutes) to open into memory.
+Improving upon this required a custom loader function.
+Luckily, the mdtraj code is available freely, so the \verb|load_topology| function was modified to accept the input of an \verb|HDF5| format, which was obtained by saving the coordinates of frame zero.
+The customized topology loader sped this up by a factor of $5.4\text{x}$ to 86 seconds.
+So, we have improved the onloading of data to memory, 
+
 With the corrected graph-matching procedure in place, the identification of alanine molecules in the simulation is now more reliable, allowing for a detailed analysis of their structural properties. 
 
 \begin{figure}[!ht]
@@ -62,6 +75,8 @@ From the approximately 500,000 alanine molecules synthesized in the Early Earth 
 To efficiently process the vast amounts of molecular data generated in the Early Earth simulation, MolFind leverages GPU-accelerated computing through the RAPIDS ecosystem, specifically cuGraph and cuDF, to minimize CPU bottlenecks and perform large-scale graph analysis directly on the GPU. The core of the molecular identification workflow—constructing atomic graphs, finding molecular fragments, and analyzing connectivity—is executed using cuGraph, which provides highly optimized, massively parallel algorithms for graph operations. Instead of iterating through millions of atomic interactions on the CPU, cuGraph’s connected component search rapidly groups atoms into discrete molecular fragments, enabling near-instantaneous classification of structures.
 
 Once fragments are identified, cuDF is used  to store and manipulate molecular descriptors, allowing for rapid filtering, sorting, and aggregation of molecular data while remaining in GPU memory. Unlike traditional CPU-based approaches, which require costly data transfers between RAM and GPU memory, cuDF enables columnar data operations directly within GPU memory, accelerating tasks such as counting molecular occurrences, applying transformations to chemical formulas, and merging results with reference databases. The entire pipeline—from reading molecular dynamics trajectories to identifying molecules and performing statistical analysis—remains within the GPU as much as possible, significantly reducing computation time compared to CPU-bound methods. By using RAPIDS' GPU-native tools, MolFind achieves a scalable approach to analyzing tens of millions of atoms across thousands of trajectory frames, making high-throughput molecular discovery feasible for large-scale simulations.
+
+
 
 \section{Restarts -- Quench analysis}
 \label{sec:restarts_quench_analysis}
@@ -102,6 +117,99 @@ This analysis reinforces the idea that thermal history plays a crucial role in t
 As mentioned in Subsection \ref{subsec:drawback_config_sampling}, configurational is difficult in the active learning via query by committee used in generating ANI datasets, and as a result new molecular configurations have been sampled from enumeration datasets and other curated chemical datasets.
 The ANI-1xnr \cite{ani-1xnr} approach to generating training set data via nanoreactors and other approaches taken in 1xnr paper serves as an inspiration for sampling new configurations from a massive batch of reaction data.
 
+Unique signatures
+\begin{verbatim}
+    
+>>> len(unique_signatures_df['signature'].unique())
+1119793
+
+>>> unique_signatures_df.head()
+               signature  time        counts        per_frame_count
+0  CHHHH_C-H_C-H_C-H_C-H   0.0  326,456,352,440     927,432
+1            HHO_H-O_H-O   0.0  599,974,869,205     1,704,474
+2       HHHN_H-N_H-N_H-N   0.0  283,123,115,083     804,327
+3                 HH_H-H   0.0  242,625,414,453     689,276
+4                 CO_C-O   0.0   58,501,381,388     166,197
+>>> unique_signatures_df[unique_signatures_df['counts']==1]
+                                                 signature      time  counts
+412      CCCHHHHHNNOOOO_C-C_C-C_C-N_C-N_C-O_C-O_C-O_H-N...  0.114312       1
+565      CCCHHNNOOOO_C-C_C-C_C-N_C-N_C-O_C-O_C-O_H-N_H-...  0.120650       1
+922      CCCCCHHHHHNOOOOO_C-C_C-C_C-C_C-C_C-H_C-N_C-O_C...  0.129687       1
+1020     CCCCCHHHHNOOOOOOO_C-C_C-C_C-C_C-C_C-N_C-O_C-O_...  0.131225       1
+1090     CCCCHHHNOOOOOO_C-C_C-C_C-C_C-N_C-O_C-O_C-O_C-O...  0.132513       1
+...                                                    ...       ...     ...
+1119788  CCCCCCCCCCCCCCCHHHHHHHHHHHHHHHHHHHHNNNOOO_C-C_...  4.392288       1
+1119789  CCCCCCCCCCCCCCCHHHHHHHHHHHHHHHHHHHHHNNNNOO_C-C...  4.392962       1
+1119790  CCCCCCCHHHHHHHHHHNNOO_C-C_C-C_C-C_C-C_C-C_C-C_...  4.396262       1
+1119791  CCCCCCCCCCCCCHHHHHHHHHHHHHHHHNO_C-C_C-C_C-C_C-...  4.396625       1
+1119792  CCCCCCCCCCCHHHHHHHHHHHHHHHHHNNOOO_C-C_C-C_C-C_...  4.398237       1
+
+[373537 rows x 3 columns]
+
+>>> unique_signatures_df[unique_signatures_df['counts']==2]
+                                                 signature      time  counts
+228          HHHHHHNNO_H-N_H-N_H-N_H-N_H-N_H-N_H-N_H-O_H-O  0.072750       2
+511      CCHHHHHNOOOO_C-C_C-H_C-N_C-O_C-O_H-N_H-N_H-O_H...  0.118887       2
+762      CCCCCHHNOOOOOO_C-C_C-C_C-C_C-C_C-N_C-O_C-O_C-O...  0.126412       2
+763      CCCHHHHNNNOOO_C-C_C-C_C-N_C-N_C-O_C-O_C-O_H-N_...  0.126412       2
+765      CCCCCHHHHHNNOOOOO_C-C_C-C_C-C_C-C_C-N_C-O_C-O_...  0.126475       2
+...                                                    ...       ...     ...
+1119744  CCCCCCCCCCCCHHHHHHHHHHNNNOOO_C-C_C-C_C-C_C-C_C...  4.366250       2
+1119762  CCCCCCCCCCCCHHHHHHHHHHHHHHNOOOO_C-C_C-C_C-C_C-...  4.374162       2
+1119770  CCCCCCCCCCCHHHHHHHHHHHHNNNOO_C-C_C-C_C-C_C-C_C...  4.381588       2
+1119780  CCCCCCCCCCHHHHHHHHHHHHHHHHHHHHNNNOO_C-C_C-C_C-...  4.385512       2
+1119786  CCCCCCCCCCCCCCHHHHHHHHHHHHHHHHHHHHHNNNO_C-C_C-...  4.390450       2
+
+[131094 rows x 3 columns]
+
+>>> unique_signatures_df[unique_signatures_df['counts']==3]
+                                                 signature      time  counts
+241      HHHHHHHNNO_H-N_H-N_H-N_H-N_H-N_H-N_H-N_H-N_H-O...  0.079375       3
+318      HHHHHHHHNNOO_H-N_H-N_H-N_H-N_H-N_H-N_H-N_H-N_H...  0.106250       3
+408      CCCCHHNOOOOO_C-C_C-C_C-C_C-N_C-O_C-O_C-O_C-O_H...  0.113987       3
+431      CCCCCHHHNOOOOOO_C-C_C-C_C-C_C-C_C-N_C-O_C-O_C-...  0.115025       3
+619      CCCCHHHNOOOOO_C-C_C-C_C-C_C-H_C-N_C-O_C-O_C-O_...  0.122212       3
+...                                                    ...       ...     ...
+1119664  CCCCCCCCCHHHHHHHHHHHHHNNNOO_C-C_C-C_C-C_C-C_C-...  4.349437       3
+1119678  CCCCCCCCCCCCCCCHHHHHHHHHHNNNOO_C-C_C-C_C-C_C-C...  4.351100       3
+1119742  CCCCCCCCHHHHHHHHHHHHHHHHNNNNOOO_C-C_C-C_C-C_C-...  4.363587       3
+1119772  CCCCCCCCCCCCCCCHHHHHHHHHHHHHHHHHHHHHHHHHNNNN_C...  4.381725       3
+1119775  CCCCCHHHHHHHNNNOOO_C-C_C-C_C-C_C-H_C-H_C-H_C-N...  4.383225       3
+
+[74057 rows x 3 columns]
+
+>>> unique_signatures_df[unique_signatures_df['counts']==4]
+                                                 signature      time  counts
+285                             HHHNOO_H-N_H-N_H-N_H-O_H-O  0.095850       4
+389      HHHHHHHNOOO_H-N_H-N_H-N_H-N_H-O_H-O_H-O_H-O_H-...  0.113200       4
+566      CCCHHHHNOOOOO_C-C_C-C_C-N_C-O_C-O_C-O_C-O_H-N_...  0.120675       4
+781      CCCCHHHHNNOOOOO_C-C_C-C_C-C_C-N_C-O_C-O_C-O_C-...  0.126800       4
+797      CCCCCHHHNOOOOOO_C-C_C-C_C-C_C-C_C-N_C-O_C-O_C-...  0.127238       4
+...                                                    ...       ...     ...
+1119467  CCCCCCCCCCCCCCCCHHHHHHHHHHHHHHHHHHHOOOOO_C-C_C...  4.337025       4
+1119538  CCCCCCCCCCCCCCCCHHHHHHHHHHHHHHHHHHNNNNNN_C-C_C...  4.340813       4
+1119546  CCCCCCCCCCCCCCCCCHHHHHHHHHHHHHHHHHHHHNNNNNN_C-...  4.341200       4
+1119561  CCCCCCCCCCCCCCCCCCCCCCCHHHHHHHHHHHHHHHHHHHHHHH...  4.341900       4
+1119610  CCCCCHHHHHHHHHNNNNOO_C-C_C-C_C-C_C-H_C-H_C-H_C...  4.344625       4
+
+[49786 rows x 3 columns]
+
+>>> unique_signatures_df[unique_signatures_df['counts']==5]
+                                                 signature      time  counts
+50       CHHHHHHHHHNNNO_C-N_C-N_C-N_C-O_H-N_H-N_H-N_H-N...  0.000188       5
+369      HHHHHHHHHNNOO_H-N_H-N_H-N_H-N_H-N_H-N_H-N_H-N_...  0.111600       5
+833      CCCHHNOOOOO_C-C_C-C_C-N_C-O_C-O_C-O_C-O_H-N_H-...  0.127950       5
+908      CCCCCHHHHHHNNOOOOOO_C-C_C-C_C-C_C-C_C-N_C-O_C-...  0.129462       5
+1039     CCCCCHHHHNOOOOO_C-C_C-C_C-C_C-C_C-H_C-N_C-O_C-...  0.131625       5
+...                                                    ...       ...     ...
+1119480  CCCCCCCCCCCCCCCCCHHHHHHHHHHHHHHHHHHNNNNNN_C-C_...  4.338012       5
+1119522  CCCCCHHHHHHHHHNNNOO_C-C_C-C_C-C_C-C_C-H_C-H_C-...  4.339937       5
+1119551  CCCCCCCCCHHHHHHHHHNOOOOOO_C-C_C-C_C-C_C-C_C-C_...  4.341387       5
+1119626  CCCCCCCCCCCCCCCCCHHHHHHHHHHHHHHHHHHHHHHHNNNNNN...  4.345712       5
+1119720  CCCCCCCCCCCCCCCCCHHHHHHHHHHHHHHHHHHHHHHHHHHHNN...  4.359275       5
+
+[37250 rows x 3 columns]
+\end{verbatim}
 
 \section{Interpretation of Results}
 \label{sec:hero_run_interpretation}

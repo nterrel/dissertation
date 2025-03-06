@@ -55,16 +55,16 @@ Many viable pre-defined atomic descriptors have been reported in the literature 
 Some applications further refine these representations with learnable descriptors, which can fit to more complex data on-the-fly as needed \cite{wACSF, SchNet, PhysNet, AIMNet_NSE, NequIP, interatomic_descriptors_kabylda}.
 The most popular of these approaches for describing local atomic environments was developed by Behler and Parrinello \cite{atom_centered_symmetry_function_behler}, and further modified to better fit to training data \cite{TensorMol, ani-1}.
 Behler-Parrinello (BP) symmetry functions were among the earliest successes in generalized machine-learned interatomic potential models \cite{behler_parrinello}, demonstrating the capabilities of ML-PES to capture complex, many-body interactions within chemical systems.
-An example of modified BP atom-centered symmetry functions \cite{ani-1}, computed for each atom to identify neighboring species within a pre-defined cutoff radius, are shown in Equations \ref{eq:cosine_cutoff_function}, \ref{eq:radial_symmetry_function}, and \ref{eq:angular_symmetry_function}. 
-The first of these equations is the cutoff function, $f_C$, used to smoothly fade out atoms near the boundary of the local atomic environment defined by $R_C$. Here, $R_{ij}$ is the Euclidean distance between two atoms $i$ and $j$. 
+An example of modified BP atom-centered symmetry functions \cite{ani-1}, computed for each atom to identify neighboring species within a pre-defined cutoff radius, are shown in Equations \ref{eq:smooth_cutoff}, \ref{eq:radial_symmetry_function}, and \ref{eq:angular_symmetry_function}. 
+The first of these equations is the cutoff function, $f_C$, used to smoothly fade out atoms near the boundary of the local atomic environment defined by $R_C$. Here, $R_{ij}$ is the Euclidean distance between two atoms $i$ and $j$ and $\epsilon = 10^{-10}$ to prevent division by zero in the case of an atom at exactly the cutoff radius. 
 
 \begin{equation}
 f_C(R_{ij}) = 
 \begin{cases} 
-0.5 \times \cos\left(\frac{\pi R_{ij}}{R_C}\right) + 0.5 & \text{for } R_{ij} \leq R_C \\
+\exp \left(1 - \frac{1}{1 - \left(\frac{R_{ij}}{R_c}\right)^{2} + \epsilon} \right) & \text{for } R_{ij} \leq R_C \\
 0.0 & \text{for } R_{ij} > R_C 
 \end{cases}
-\label{eq:cosine_cutoff_function}
+\label{eq:smooth_cutoff}
 \end{equation}
 
 Within the specified cutoff radius, modified BP symmetry functions are comprised of two components. 
