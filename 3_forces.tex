@@ -569,7 +569,7 @@ C\textsubscript{2}H\textsubscript{3}N\textsubscript{7}O\textsubscript{2}
 \end{flushleft}
 
 Notice here that the structure in (A) is exactly the same as in Figure \ref{fig:atom_isolator}, while (B) has been reduced to a single fragment.
-\authorRemark{Without any additional logic to decide valences, RDKit tries to retain the same as before---even when the \verb|AddHs| function is used.}
+\authorRemark{Without any additional logic to decide valences, RDKit tries to retain the same as before---even when the} \verb|AddHs| \authorRemark{function is used.}
 Despite an awareness to these challenges, \verb|v0.1| of LUKE: Use the Forces incorporates a fragment sanitization scheme, and is set up to handle \verb|XYZ| and \verb|HDF5| file types for input and output. 
 In order to get sanitized structures, we need to convert the \verb|.xyz| file into a \verb|.mol| file with OpenBabel \cite{babel} to get connectivity information, then load the \verb|mol| object into RDKit and use the Sanitize and GetMolFrags functions to fill valences and filter out the nonbonded atoms, respectively.
 \authorRemark{
