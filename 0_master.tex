@@ -23,6 +23,27 @@
 
 \pgfplotsset{compat=1.18} % This is a suggestion by overleaf, but idk what it does.
 
+
+\usepackage{listings} % For formatted code
+\usepackage{inconsolata} % Optional: Uses a nicer monospaced font
+
+\lstset{
+    basicstyle=\ttfamily\footnotesize,  % Monospace font, smaller size
+    breaklines=true,                     % Wrap long lines
+    keepspaces=true,                     % Preserve spaces
+    columns=fullflexible,                % Allow flexible spacing
+    frame=single,                         % Draw a frame around the code
+    captionpos=b,                         % Caption below the code block
+    xleftmargin=10pt,                     % Add some left margin
+    xrightmargin=10pt,
+    framesep=5pt,                         % Space inside the frame
+    numbers=left,                         % Line numbers
+    numberstyle=\tiny,                    % Small line numbers
+    lineskip=-1pt                         % Adjust line spacing
+}
+
+\usepackage[version=4]{mhchem}
+
 \usepackage{scrextend}
 \deffootnote{1.5em}{0em}{\thefootnotemark\quad}
 \usepackage[all]{nowidow} %avoids single lines of text at the top or bottom of page.  If any of your packages cause this package not to work, you will have to manually remove any orphans/widows or add a line penalty
@@ -43,7 +64,7 @@
 %           If John was your chair and you had no cochair, you can simply use \chair{John}.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{Use the Force: Advancing ANI Neural Network Potentials for Large-Scale Molecular Simulations}%  Put your title here.
+\title{Use the Forces: Advancing ANI Neural Network Potentials for Large-Scale Molecular Simulations}%  Put your title here.
 
 \degreeType{Doctor of Philosophy}%   Official name of your degree; eg "Doctor of Philosophy".
 \major{Chemistry}%                    Your official Department

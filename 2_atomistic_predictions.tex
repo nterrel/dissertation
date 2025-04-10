@@ -4,7 +4,7 @@
 Atomic interactions are the foundation on which many ML models---especially interatomic potential models---are built.
 Accuracy is well-defined in quantum chemical methods via systematic convergence and comparison to experimental data, but wavefunction-based approaches are computationally expensive and are limited to system sizes of only a handful of atoms.
 Measuring predictive accuracy is difficult when approximating the results of first principles computations for systems that exceed the size limitations of QM approaches.
-This raises a vital question to the efficacy of ML models: how do we assess the reliability of atomistic neural network potential models for systems that exceed the size limitations of QM computations?
+This raises a vital question to the efficacy of ML models: how do we assess the reliability of atomistic NNP models for systems that exceed the size limitations of QM computations?
 
 The scalability of NNP models stems from partitioning molecules into atomic components, characterized by their local chemical environment.
 However, this introduces new challenges in generalization and transferability and, therefore, model reliability when exposed to new atomic interactions during inference.
@@ -47,7 +47,10 @@ The atomic energy contributions predicted by the ANI-2x model for C, H, N, and O
 \begin{figure}[!h]
     \centering
     \includegraphics[width=1\linewidth]{Images/2x_outputs/2x_1x-first_ae-per-model.png}
-    \caption[Atomic energies predicted by ANI-2x]{Per-model distribution of atomic energy contributions by atom type for the ANI-2x potential. Values shown in kcal/mol for HCNO atom types on the 1x-first subset.}
+    \caption[Atomic energies predicted by ANI-2x]{Per-model distribution of atomic energy contributions by atom type for the ANI-2x potential. Values shown in kcal/mol for HCNO atom types on the 1x-first subset\\($N_\text{H}=$ 36,329; 
+    $N_\text{C}=$ 21,907; 
+    $N_\text{N}=$ 8,211;
+    $N_\text{O}=$ 6,303).}
     \label{fig:2x_ae_per_model}
 \end{figure}
 
@@ -63,7 +66,11 @@ Ground state atomic energies are calculated at the level of theory used in produ
 Thus, the total energy prediction in ANI-2xr networks are computed as shown in Equation \ref{eq:total_E_GSAEs}.
 
 \begin{equation}
-    E_{\text{Total}} = \sum_{i}^{\text{atoms}} \varepsilon_i + \text{GSAE}_i
+    E_{\text{Total}} = 
+    \sum_{i}^{\text{atoms}} 
+    \left(
+    \varepsilon_i + \text{GSAE}_i
+    \right)
     \label{eq:total_E_GSAEs}
 \end{equation}
 
@@ -82,23 +89,26 @@ The parameters $Y_A$ and $Y_B$ define the magnitude of the repulsive term for th
 \end{equation}
 
 The ANI-2xr atomic energy distribution for hydrogen, carbon, nitrogen, and oxygen are given in Figure \ref{fig:2xr_ae_per_model} for an eight-membered ensemble.
-Note here that the distributions have slightly different shapes, as well as being shifted far from the zero-centered ANI-2x distributions shown in Fig. \ref{fig:2x_ae_per_model} above.
+Note here that the distributions have slightly different shapes, as well as being shifted far from the zero-centered ANI-2x distributions shown in Figure \ref{fig:2x_ae_per_model} above.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Images/2xr_outputs/2xr_1x-first_ae-per-model.png}
-    \caption[Atomic energies predicted by ANI-2xr]{Distribution of atomic energy contributions by atom type for the ANI-2xr potential. Values shown in kcal/mol for CHNO atom types on the 1x-first subset.}
+    \caption[Atomic energies predicted by ANI-2xr]{Distribution of atomic energy contributions by atom type for the ANI-2xr potential. Values shown in kcal/mol for CHNO atom types on the 1x-first subset  ($N_\text{H}=$ 36,329; 
+    $N_\text{C}=$ 21,907; 
+    $N_\text{N}=$ 8,211;
+    $N_\text{O}=$ 6,303).}
     \label{fig:2xr_ae_per_model}
 \end{figure}
 
 The difference in the shapes of these distributions is an important aspect of analyzing the predictive uncertainty of ANI neural network potentials.
-Due to the differences in hyperparameters used in training, such as the removal of biases, the use of the GELU activation function \cite{gelu}, continuous second derivatives improving the smoothness of predicted potential energy surfaces, and the addition of ground state atomic energies and a repulsive term, ANI-2xr will be used to explore trends in uncertainty in predictions by ANI neural networks. 
+Due to the differences in hyperparameters used in training, such as the removal of biases, the use of the GELU activation function \cite{gelu}, continuous second derivatives improving the smoothness of predicted potential energy surfaces, and the addition of ground state atomic energies and a repulsive term, ANI-2xr will be used to explore trends in predictive uncertainty by ANI neural networks. 
 
 \subsection{Uncertainty in ANI Neural Network Potentials}
 \label{subsec:ANI_uncertainty}
 
-ANI potential models use an ensemble of eight independently models, allowing for the estimation of predictive uncertainty.
-This uncertainty metric is frequently used in active learning strategies to guide data selection for model improvement.
+ANI potential models use an ensemble of eight independently trained models, allowing for the estimation of uncertainty in energy predictions.
+This metric is frequently used in active learning strategies to guide data selection for model improvement.
 Predictive uncertainty has been measured in published models using $\hat{\rho}$; the value 0.23 kcal/mol was empirically chosen for sampling structures with high-error energy predictions via query by committee (QBC) in the active learning process \cite{ani-1x}.
 The QBC value, given in Eqn. \ref{eq:energy_qbc}, can be thought of as a binary classifier: molecules with QBC values above 0.23 kcal/mol are highly-uncertain predictions and shouldn't be trusted, while values below 0.23 kcal/mol are trustworthy, agreed upon values by the ensemble.
 
@@ -108,8 +118,8 @@ The QBC value, given in Eqn. \ref{eq:energy_qbc}, can be thought of as a binary 
 \end{equation}
 
 This value is normalized by the size of the molecule, ensuring that uncertainty values remain comparable across different molecular systems. 
-In the development of ANI-1x, a threshold value of 0.23 kcal/mol was empirically chosen as the criterion for selecting molecules with high-energy uncertainty for further active learning \cite{ani-1x}.
-However, while QBC serves as a useful uncertainty metric for guiding active learning, it introduces a size-dependent limitation. 
+In the development of ANI-1x, the threshold value of 0.23 kcal/mol was empirically chosen as the criterion for selecting molecules with high-energy uncertainty for further active learning \cite{ani-1x}.
+However, while the energy QBC serves as a useful uncertainty metric for guiding active learning, it introduces a size-dependent limitation. 
 Because $\sqrt{N_\text{atoms}}$ appears in the denominator, molecules with a large number of atoms can exhibit low uncertainty values, even if individual atomic energy predictions are highly uncertain---particularly in unique structural motifs. 
 This means that large structures may be misclassified as “low-error” molecules despite containing regions of high uncertainty. 
 Consequently, high-error structures may slip through the active learning process, leading to gaps in the training data for larger molecules.
@@ -121,16 +131,19 @@ This per-atom decomposition allows for a finer-grained analysis of uncertainty, 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Images/2xr_outputs/2xr_comp6v1_mean-ae-per-atomtype.png}
-    \caption[Mean atomic energy prediction per-atom with ANI-2xr]{Distribution of predicted mean atomic energies using the ANI-2xr model on the COMP6v1 benchmark set.}
+    \caption[Mean atomic energy prediction per-atom with ANI-2xr]{Distribution of predicted mean atomic energies using the ANI-2xr model on the COMP6v1 benchmark set ($N_\text{H}=$ 1,352,100; 
+    $N_\text{C}=$ 890,691; 
+    $N_\text{N}=$ 193,592;\\ 
+    $N_\text{O}=$ 172,475).}
     \label{fig:2xr_comp6v1_mean-ae-per-atomtype}
 \end{figure}
 
 By analyzing per-atom uncertainty estimates, it becomes possible to refine uncertainty quantification methods beyond the QBC, addressing the size-dependent bias and improving the selection of high-error molecules for retraining in future ANI models.
 
-\subsection{Exploration of the Flaws in Measuring Uncertainty via Predicted Total Energy}
+\subsection{Flaws in Measuring Uncertainty via Predicted Total Energy}
 \label{subsec:flaws_in_qbc}
 
-Shown in Equation \ref{eq:energy_qbc}, the uncertainty metric historically used in the ANI methodology is the QBC value. 
+Shown in Equation \ref{eq:energy_qbc}, the uncertainty metric historically used in the ANI methodology is the energy QBC value. 
 This metric is flawed in that it is extremely size-dependent and can be skewed by a large number of atoms within a system. 
 Molecules with a high QBC value are more likely to be smaller, less chemically complex molecules, which can lead to sampling biases in active learning.
 A clear example of size dependence in ANI uncertainty estimation can be illustrated by comparing the QBC values of two molecules with similar structural motifs but very different $N_{\text{atoms}}$, as shown in Figure \ref{fig:qbc_size_dep}.
@@ -142,8 +155,8 @@ A clear example of size dependence in ANI uncertainty estimation can be illustra
     \addFigure{0.5}{Images/qbc_size_dep/m-epox-2d.png}
     \addFigure{0.5}{Images/qbc_size_dep/l-epox-2d.png}
 \captionof{figure}[Size-dependence of QBC]{
-(A) Example structure with a high QBC (2.8411 kcal/mol).
-(B) A molecule with the same geometry in the ring, but a long hydrocarbon side chain. 
+(A) Example structure with a high QBC.
+(B) A molecule with the same geometry in the ring, but an extended hydrocarbon side chain. 
 Subfigures (C) and (D) show 2D line structures of these molecules.
 }
 \label{fig:qbc_size_dep}
@@ -159,6 +172,7 @@ The system sizes and QBC values for these two structures are presented in Table 
 \begin{table}[ht]
     \begin{centering}
     \setlength{\tabcolsep}{11pt}
+    \caption[Size dependence of the QBC]{Size dependence of the QBC uncertainty metric for two similar structures with different $N_{\text{atoms}}$, shown in Figure \ref{fig:qbc_size_dep}.}
     \begin{tabularx}\textwidth{llrr}
     \toprule
     Molecular formula & SMILES & $\sqrt{N_{\text{atoms}}}$ & $\rho$ (kcal/mol) \\
@@ -167,8 +181,6 @@ The system sizes and QBC values for these two structures are presented in Table 
     C\textsubscript{19}H\textsubscript{36}O & (CCCCCCCCCCCCCCC1CC2OC2C1) & 7.48 & 0.0964  \\
     \bottomrule
     \end{tabularx}
-    \caption[Size dependence of the QBC]{
-    Size dependence of the QBC uncertainty metric for two similar structures with different $N_{\text{atoms}}$, shown in Figure \ref{fig:qbc_size_dep}.}
     \label{tbl:qbc_size_dep}
     \end{centering}
 \end{table}
@@ -192,7 +204,10 @@ Figure \ref{fig:2xr_comp6v1_stdev-ae-per-atomtype} illustrates the distribution 
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{Images/2xr_outputs/2xr_comp6v1_stdev-ae-per-atomtype.png}
-    \caption[Standard deviation in predicted atomic energy contribution for H, C, N, O atom types]{Distribution of standard deviation in predicted atomic energies using the ANI-2xr model on the COMP6v1 benchmark set.}
+    \caption[Standard deviation in predicted atomic energy contribution for H, C, N, O atom types]{Distribution of standard deviation in predicted atomic energies using the ANI-2xr model on the COMP6v1 benchmark set ($N_\text{H}=$ 1,352,100; 
+    $N_\text{C}=$ 890,691;\\ 
+    $N_\text{N}=$ 193,592; 
+    $N_\text{O}=$ 172,475).}
     \label{fig:2xr_comp6v1_stdev-ae-per-atomtype}
 \end{figure}
 
@@ -209,10 +224,10 @@ Figure \ref{fig:ch4_stdev_ae} presents the standard deviation in atomic energy c
     \addFigure{0.31}{Images/ch4.png}
     \addFigure{0.68}{Images/ch4_example/ch4_2xr_total-e-qbc.png} \\
     \addFigure{1}{Images/ch4_example/ch4_2xr_stdev-ae.png}
-\captionof{figure}[CH\textsubscript{4} atomic energy distribution vs 1x-first]{
+\captionof{figure}[CH\textsubscript{4} atomic energy distribution versus 1x-first subset]{
 (A) Structure of geometry-optimized CH\textsubscript{4}; 
-(B) Plot of the distribution of total energy QBC across the 1x-first test set, 
-(C) standard deviation in predicted atomic energy for hydrogen (left) and carbon (right); 
+(B) Plot of the distribution of total energy QBC across the 1x-first test set ($N_\text{molecules}=$ 3,114), 
+(C) standard deviation in predicted atomic energy for hydrogen (left, $N=36,329$) and carbon (right, $N=21,907$); 
 the red lines show the standard deviation in CH\textsubscript{4} total energy (B) and atomic energy contributions (C).
 }
 \label{fig:ch4_stdev_ae}
@@ -226,7 +241,7 @@ This suggests that even in highly symmetric molecules, such as CH\textsubscript{
 
 The per-atom uncertainty in ANI models is not only influenced by the training data but also by learned covariances across network predictions. 
 The atomic energy contributions predicted by different models within the ANI ensemble exhibit correlated variations, where changes in one atomic energy may be systematically offset by adjustments in another.
-For example, Table \ref{tbl:ch4_AEs} reports the atomic energy contributions predicted by each model (before GSAEs are added) in the ANI-2xr ensemble for CH\textsubscript{4}.
+For example, Table \ref{tbl:ch4_AEs} reports the atomic energy contributions predicted by each model (before and after the GSAEs are added) in the ANI-2xr ensemble for CH\textsubscript{4}.
 
 % Tables suck, but this helped me align columns and headers separately:
 \begin{table}[h]
@@ -262,11 +277,11 @@ Standard deviation &  11.7621 &  2.9412 &  0.0775 &  0.0775 \\
 \end{table}
 
 While the individual atomic energies fluctuate across models, the sum of atomic energies remains tightly constrained, with a standard deviation two orders of magnitude lower than that of the individual atomic contributions.
-This covariance, defined in Eqn. \ref{eq:covariance}, reflects a learned compensation mechanism where certain atomic energy predictions systematically adjust in response to others.
+This covariance, defined in Eqn. \ref{eq:covariance}, reflects a learned compensation mechanism where certain atomic energy predictions systematically adjust in response to others, captured by deviations of each variable from its expected value.
 
 \begin{equation}
     \label{eq:covariance}
-    \text{cov}(x, y) = \mathbb{E}[(x - \mathbb{E}[x])(y - \mathbb{E}[y])]
+    \text{cov}(x, y) = \langle (x - \langle x \rangle)(y - \langle y \rangle) \rangle
 \end{equation}
 
 This suggests that ANI models learn relative atomic energy distributions, where variations in one atom's contribution are counterbalanced by adjustments in others to maintain a stable total molecular energy. 

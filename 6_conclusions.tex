@@ -1,22 +1,30 @@
-\chapter{SUMMARY AND CONCLUSIONS} \label{conclusion}
+\chapter{Concluding Remarks} 
+\label{conclusion}
 
-Machine-learned potentials such as ANI provide a powerful framework for conducting large-scale molecular dynamics simulations with near-quantum accuracy. However, fully realizing the potential of ANI models requires advances in uncertainty quantification, data-efficient training, and computational scalability. The Early Earth project has been a proving ground for ANI’s capabilities, pushing the boundaries of reactive molecular dynamics with machine learning to an unprecedented scale. In this chapter, we reflect on the key advancements made throughout this work and discuss the future directions that build upon these achievements.
+Machine-learned interatomic potential models are a powerful framework for conducting large-scale molecular dynamics simulations with near-quantum accuracy.
+Furthering ANI models toward generalization with greater real-world utility required advances in uncertainty quantification, data-efficient training, and computational scalability.
+The Early Earth project is a demonstration of the capabilities of ANI models, pushing the boundaries of reactive molecular dynamics with machine-learned potentials to an unprecedented scale.
+We reflect in this chapter on the key advancements made throughout this work.
 
-\section{Outlook on Uncertainty in ANI Predictions}
+\section{Reflection on Uncertainty in ANI Predictions}
 
-Uncertainty quantification remains a major challenge in the field of machine-learned interatomic potentials. While ANI’s ensemble-based approach provides a natural means of estimating uncertainty, early methods—such as Query by Committee (QBC)—relied on total molecular energy variance, which we have shown to be insufficient for large, complex systems. By shifting the focus toward atomic force uncertainty, this work has provided a more physically meaningful approach to assessing model confidence.
+Uncertainty quantification remains a major challenge in the field of machine-learned interatomic potentials.
+The ensemble-based approach utilized by ANI models provides a natural means of estimating uncertainty.
+Sampling data in active learning via Query by Committee (QBC) of total molecular energy variance was shown to be insufficient for large, complex systems. 
+By shifting the focus toward atomic force uncertainty, this work has provided a more physically meaningful approach to assessing model confidence.
+The maximum relative deviation in force predictions was shown to be a promising uncertainty metric, offering a scalable way to identify high-error regions of molecules. 
+Integrating force-based uncertainty measures directly into the active learning loop would allow ANI models to be trained more efficiently, requiring fewer high-level quantum mechanical calculations while improving model accuracy in underrepresented regions of chemical space.
+With the development of LUKE: Use the Forces, a tool for identifying and extracting high-uncertainty atomic environments, we move toward a more targeted approach to data selection. 
+Refining training sets based on regions where the model struggles most will push ANI models to greater accuracy with less data, a key step toward scaling machine-learned potentials for broader applications.
 
-The maximum deviation in force predictions has emerged as a promising uncertainty metric, offering a scalable way to identify high-error regions of molecules. However, several open questions remain. Future work must investigate how this metric generalizes across different chemical spaces, temperatures, and molecular environments. Additionally, integrating force-based uncertainty measures directly into the active learning loop will allow ANI models to be trained more efficiently, requiring fewer high-level quantum mechanical calculations while improving model accuracy in underrepresented regions of chemical space.
+\section{Reflection on Early Earth Reactive Simulations}
 
-With the development of Atom Isolator, a tool for extracting and refining high-uncertainty atomic environments, we move toward a more targeted approach to data selection. By refining training sets based on regions where the model struggles most, future ANI iterations can achieve greater accuracy with less data, a key step toward scaling machine-learned potentials for broader applications.
+The Early Earth project proves that ANI potentials are a powerful tool for modeling prebiotic chemistry on a massively distributed scale. 
+The Hero Run simulation demonstrates the scaling capabilities of LAMMPS-ANI to tens of millions of atoms and with just 4.4 ns of evolution shows an unprecedented exploration of chemical complexity.
+This study opens new avenues for probing the origins of life, but also presents several challenges that future research must address.
+A fundamental limitation of simulation on this scale lies in the analysis of trajectory data. 
+The data generated by the Hero Run required the development of new GPU-accelerated methods to filter and classify molecules. 
+Even with these improvements, identifying all of the meaningful reaction pathways in hundreds of terabytes of data remains a bottleneck. 
 
-\section{Outlook on the Early Earth Hero Run}
-
-The Early Earth project has demonstrated the viability of ANI-based machine learning potentials for modeling prebiotic chemistry on a massive scale. The Hero Run simulation---spanning 22.8 million atoms and 4.5 nanoseconds of evolution---represents an unprecedented exploration of chemical complexity in a high-temperature, reactive system. This study opens new avenues for probing the origins of life, but also presents several challenges that future research must address.
-
-A primary challenge lies in data analysis. The massive trajectory dataset generated by the Hero Run required the development of new GPU-accelerated methods to filter and classify molecules. However, even with these improvements, identifying meaningful reaction pathways in hundreds of terabytes of data remains a bottleneck. 
-
-
-%\section{Reflections on PhD research}
-
-
+The work presented in this dissertation is aimed to demonstrate the scientific value of combining neural network potential models with massively parallel computing to simulate realistic, reactive chemical environments.
+From the continued development of uncertainty metrics and atom-level data selection strategies to the deployment of ANI potentials on systems with millions of atoms, the work presented here is only a starting point for the role machine learning models are to play in chemistry moving forward.

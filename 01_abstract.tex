@@ -3,16 +3,16 @@ Among these, the ANAKIN-ME (ANI) neural network potentials offer a balance of sp
 This dissertation explores the application of ANI models in molecular simulations, with a focus on predictive reliability, uncertainty quantification, and large-scale implementation in molecular dynamics.
 
 The first chapter introduces machine learning in chemistry and provides background on ANI neural network potentials. 
-Chapter 2 examines atomic energy predictions in ANI models, probing their uncertainty at the atomistic level.
-Initial efforts to quantify uncertainty in atomic energies proved unsuccessful, leading to a shift toward atomic force uncertainty, which is the focus of Chapter 3. 
+Chapter 2 examines energy predictions in ANI models, explores the atomistic properties of ANI predictions, and the uncertainty associated with those predictions.
+Initial efforts to quantify uncertainty in atomic energies proved unsuccessful, leading to a shift toward uncertainty in atomic force predictions, which is the focus of Chapter 3. 
 This chapter investigates force prediction uncertainty, seeking a physically meaningful uncertainty metric that can be applied to molecular simulations.
+Chapter 3 also introduces a new uncertainty-based approach to sampling substructures in a framework called LUKE: Use the Forces.
 
-Chapter 4 details the development of LAMMPS-ANI, an interface enabling large-scale molecular dynamics simulations using ANI potentials within the Large-scale Atomic/Molecular Massively Parallel Simulator (LAMMPS). 
-This framework allows researchers to efficiently model reactive molecular systems at high temperatures while maintaining quantum-mechanical accuracy.
+Chapter 4 details LAMMPS-ANI, an interface enabling large-scale molecular dynamics simulations using ANI potentials within the Large-scale Atomic/Molecular Massively Parallel Simulator (LAMMPS). 
+This framework allows for efficient modeling of reactive molecular systems at high temperatures while maintaining near-quantum-mechanical accuracy.
+The scalability of LAMMPS-ANI is demonstrated, culminating in a Hero Run, discussed in Chapter 5, where an early Earth simulation of 22.8 million atoms at 2500 K was performed. 
+This simulation generated a massive volume of data, necessitating GPU-accelerated analysis pipelines to identify and characterize the millions of novel molecules formed under extreme conditions. 
+The challenges of handling big data in large-scale molecular simulations, as well as the emergence of complex chemical diversity, are explored throughout Chapter 5.
 
-The scalability of LAMMPS-ANI was demonstrated in a hero run, discussed in Chapter 5, where an early Earth simulation of 22.8 million atoms at 2500 K was performed. 
-This simulation generated an unprecedented volume of data, necessitating GPU-accelerated analysis pipelines to identify and characterize the millions of novel molecules formed under extreme conditions. 
-The challenges of handling big data in large-scale molecular simulations, as well as the emergence of complex chemical networks, are explored.
-
-The dissertation concludes with a discussion of ANI's impact on computational chemistry, the challenges of scaling machine learning potentials to massive simulations, and future directions for improving uncertainty quantification and high-throughput molecular discovery. 
-By advancing both the methodological and computational frameworks for ANI-based simulations, this work contributes to the ongoing effort to bridge the gap between quantum accuracy and large-scale molecular modeling.
+This dissertation concludes with a discussion of ANI's impact on computational chemistry, the challenges of scaling machine learning potentials to massive simulations, and future directions for improving uncertainty quantification and high-throughput molecular discovery. 
+By advancing both the methodological and computational frameworks for ANI-based simulations, this work contributes to the ongoing effort to reconcile the chemical accuracy of quantum mechanics with large-scale molecular modeling.

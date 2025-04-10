@@ -1,147 +1,3 @@
-\chapter{Description of AEV parameters}
-\label{appendix:AEV_param}
-%{\bf Atomic environment vector computer parameters.}
-
-The Atomic Environment Vector (AEV) representation in ANI models relies on a set of carefully tuned parameters that define the radial and angular symmetry functions. These parameters determine the sensitivity of the neural network to local atomic interactions.
-\begin{center}
-\textbf{ANI-2x AEV parameters}
-\end{center}
-
-\textbf{Supported Atomic Types}
-%The following elements are included in the ANI-2x dataset:
-\begin{equation}
-\text{Atype} = \{ \text{H}, \text{C}, \text{N}, \text{O}, \text{S}, \text{F}, \text{Cl}\}
-\end{equation}
-
-\textbf{Radial Component Parameters}
-\begin{itemize}
-    \item Cutoff Radius (\( R_c^r \)): \( 5.2 \) \angstrom
-    \item Radial Decay Parameter (\( \eta_r \)): \( 19.7 \)
-    \item Shifted Radial Parameters (\( \text{ShfR} \)):  
-    \begin{equation}
-        \begin{aligned}
-        \big[ &0.8, 1.06875, 1.3375, 1.60625, 1.875, 2.14375, 2.4125, 2.68125, \\
-             &2.95, 3.21875, 3.4875, 3.75625, 4.025, 4.29375, 4.5625, 4.83125 \big]
-        \end{aligned}
-    \end{equation}
-\end{itemize}
-
-\textbf{Angular Component Parameters}
-\begin{itemize}
-    \item Cutoff Angle (\( R_c^a \)): \( 3.5 \) \angstrom
-    \item Angular Exponent (\( \zeta \)): \( 14.1 \)
-    \item Shifted Angular Parameters (\( \text{ShfZ} \)):  
-    \begin{equation}
-    \left[ 0.39269908, 1.1780972, 1.9634954, 2.7488936 \right]
-    \end{equation}
-    \item Angular Decay Parameter (\( \eta_a \)): \( 12.5 \)
-    \item Shifted Angular Radial Parameters (\( \text{ShfA} \)):  
-    \begin{equation}
-    \left[ 0.8, 1.1375, 1.475, 1.8125, 2.15, 2.4875, 2.825, 3.1625 \right]
-    \end{equation}
-\end{itemize}
-
-\bigskip
-\bigskip
-
-\begin{center}
-\textbf{ANI-1xnr AEV Parameters}
-\end{center}
-The ANI-1xnr dataset refines the standard AEV parameters for improved accuracy in reactive simulations. The following are its optimized values:
-
-\textbf{Supported Atomic Types}
-%The following elements are included in the ANI-1xnr dataset:
-\begin{equation}
-\text{Atype} = \{ \text{H}, \text{C}, \text{N}, \text{O} \}
-\end{equation}
-
-\textbf{Radial Component Parameters}
-\begin{itemize}
-    \item Cutoff Radius (\( R_c^r \)): \( 5.2 \) \angstrom
-    \item Radial Decay Parameter (\( \eta_r \)): \( 65.7 \)
-    \item Shifted Radial Parameters (\( \text{ShfR} \)):  
-    \begin{equation}
-    \left[ 0.50, 0.65, 0.79, 0.94, 1.09, 1.23, 1.38, 1.53, 1.68, 1.82, 1.97, 4.91, 5.05 \right]
-    \end{equation}
-\end{itemize}
-
-\textbf{Angular Component Parameters}
-\begin{itemize}
-    \item Cutoff Angle (\( R_c^a \)): \( 3.5 \) \angstrom
-    \item Angular Exponent (\( \zeta \)): \( 14.1 \)
-    \item Shifted Angular Parameters (\( \text{ShfZ} \)):  
-    \begin{equation}
-    \left[ 0.39269908, 1.1780972, 1.9634954, 2.7488936 \right]
-    \end{equation}
-    \item Angular Decay Parameter (\( \eta_a \)): \( 10.1 \)
-    \item Shifted Angular Radial Parameters (\( \text{ShfA} \)):  
-    \begin{equation}
-    \left[ 0.50, 0.88, 1.25, 1.63, 2.00, 2.38, 2.75, 3.13 \right]
-    \end{equation}
-\end{itemize}
-
-
-
-\chapter{Neural network structures in ANAKIN-ME models}
-\label{appendix:NN_arch}
-The ANI-2x model is an ensemble-based neural network potential designed for large-scale and high-accuracy molecular energy predictions. It consists of several key computational components that define its structure, data processing, and energy evaluation:
-
-\begin{itemize}
-    \item ANI-2x Model: Composed of eight ensembled neural networks, which collectively improve predictive accuracy and generalizability by averaging outputs from multiple models.
-
-    \item Atomic Environment Representation:
-    \begin{itemize}
-        \item AEVComputer: Constructs a fixed-length atomic environment vector (AEV) for each atom, encoding its local chemical surroundings in a rotationally, translationally, and permutationally invariant manner; defined by the parameters in Appendix \ref{appendix:AEV_param}.
-    \end{itemize}
-
-    \item Symmetry Function Transformations:
-    \begin{itemize}
-        \item StandardRadial \& StandardAngular: Define the two-body (radial) and three-body (angular) symmetry functions that contribute to the AEV construction, as shown in Equations \ref{eq:radial_symmetry_function} and \ref{eq:angular_symmetry_function}.
-        \item CutoffSmooth: Implements a smooth cutoff function to restrict interactions to a finite spatial region, defined in Eqn. \ref{eq:smooth_cutoff}.
-    \end{itemize}
-
-    \item Neighbor List Computation:
-    \begin{itemize}
-        \item FullPairwise: Computes full neighbor lists, ensuring that all atomic interactions within the cutoff radius are considered.
-    \end{itemize}
-
-    \item Energy Calibration and Transformation:
-    \begin{itemize}
-        \item EnergyShifter: Adjusts raw atomic energy outputs from the neural network to physically meaningful values. For ANI-2xr this adds ground state atomic energies to each predicted atomic energy contribution.
-    \end{itemize}
-
-    \item Species Encoding and Conversion:
-    \begin{itemize}
-        \item ChemicalSymbolsToInts \& SpeciesConverter: Convert atomic species from chemical symbols (H, C, N, O, etc.) into numerical tensor representations.
-    \end{itemize}
-\end{itemize}
-
-The network size for 2x-like ANI models is presented in Table \ref{tbl:2x_network_size}.
-
-\begin{table}[hb!]
-    \caption[ANI-2x-like network shapes]{Network size (number of nodes) used by ANI-2x-like networks.}
-    \label{tbl:2x_network_size}
-    \begin{tabularx}{\textwidth}{XXXXXX}
-    \toprule
-    \textbf{Element} & \textbf{Input size}  & \textbf{1\textsuperscript{st} layer}  & \textbf{2\textsuperscript{nd} layer} & \textbf{3\textsuperscript{rd} layer} & \textbf{Output layer}\\
-    \midrule
-    H & 1008 & 256 & 192 & 160 & 1 \\
-    C & 1008 & 224 & 192 & 160 & 1 \\
-    N & 1008 & 192 & 160 & 128 & 1 \\
-    O & 1008 & 192 & 160 & 128 & 1 \\
-    S & 1008 & 160 & 128 & 96 & 1 \\
-    F & 1008 & 160 & 128 & 96 & 1 \\
-    Cl & 1008 & 160 & 128 & 96 & 1 \\
-    \bottomrule
-    \end{tabularx}
-\end{table}
-
-
-
-%\authorRemark{INSERT ANI-1xnr TABLES HERE, BOTH THE NETWORK AND AEV PARAMS}
-
-
-
 \chapter{Ground state atomic energies}
 \label{appendix:GSAEs}
 ANI models predict atomic energy outputs that are deviations from the self-energies of each atom. 
@@ -157,18 +13,206 @@ Self energies are described in greater detail in Subsection \ref{subsec:total_E_
     \toprule
     Element & Ground state atomic energy \\
     \midrule
-    Hydrogen & -313.3288 kcal/mol \\
-    Carbon & -23,741.0879 kcal/mol \\
-    Nitrogen & -34,245.2539 kcal/mol \\
-    Oxygen & -47,089.8477 kcal/mol \\
-    Sulfur & -249,799.8594 kcal/mol \\
-    Fluorine & -62,559.4922 kcal/mol \\
-    Chlorine & -288,  727.5938 kcal/mol \\
+    Hydrogen & $-313.3288$ kcal/mol \\
+    Carbon & $-23,741.0879$ kcal/mol \\
+    Nitrogen & $-34,245.2539$ kcal/mol \\
+    Oxygen & $-47,089.8477$ kcal/mol \\
+    Sulfur & $-249,799.8594$ kcal/mol \\
+    Fluorine & $-62,559.4922$ kcal/mol \\
+    Chlorine & $-288,727.5938$ kcal/mol \\
     \bottomrule
     \end{tabular}
 \end{table}
 
-% NOTE: Fix the above table
 
-%\authorRemark{Note somehow that ANI-1xnr still uses SAEs rather than GSAEs.}
+\chapter{Medium-sized Early Earth System: Total Interesting Formula Appearances}
 
+
+\begin{table}[ht!]
+\centering
+\caption[Molecules with matching formulas found throughout the 228,000 atom run]{Molecules with matching formulas found throughout the medium atom Early Earth simulation; total appearances and the maximum number appearances in a single frame are provided.
+}\label{tbl:228k_mol_counts}
+\begin{tabularx}{0.775\textwidth}{llrr}  
+\toprule
+Name & Formula & Total appearances & Max appearances \\
+\midrule
+Adenine & C5H5N5 & 1  & 1 \\
+Guanine & C5H5N5O & 4  & 1 \\ 
+Cytosine & C4H5N3O & 11,059 & 3 \\
+Thymine & C5H6N2O2 & 26,820 & 3 \\
+Uracil & C4H4N2O2 & 30,892 & 3 \\
+Glucose & C6H12O6 & 0 & 0 \\
+Fructose & C6H12O6 & 0 & 0 \\
+Ribose & C5H10O5 & 1 & 1 \\
+Deoxyribose & C5H10O4 & 25 & 1 \\
+Caprylic acid & C8H16O2 & 87 & 1 \\
+Capric acid & C10H20O2 & 0 & 0 \\
+Lauric acid & C12H24O2 & 0 & 0 \\
+Myristic acid & C14H28O2 & 0 & 0 \\
+Palmitic acid & C16H32O2 & 0 & 0 \\
+Alanine & C3H7NO2 & 39,376 & 5 \\
+Arginine & C6H14N4O2 & 0 & 0 \\
+Asparagine & C4H8N2O3 & 495 & 1 \\
+Aspartic acid & C4H7NO4 & 187 & 1 \\
+Glutamine & C5H10N2O3 & 205 & 1 \\
+Glutamic acid & C5H9NO4 & 80 & 1 \\
+Glycine & C2H5NO2 & 118,675 & 14 \\
+Histidine & C6H9N3O2 & 1,370 & 2 \\
+Isoleucine & C6H13NO2 & \multicolumn{2}{r}{(counts mixed with Leucine)} \\
+Leucine & C6H13NO2 & 398 & 2 \\
+Lysine & C6H14N2O2 & 25 & 1 \\
+Phenylalanine & C9H11NO2 & 15,416 & 3 \\
+Proline & C5H9NO2 & 42,655 & 4 \\
+Serine & C3H7NO3 & 1,718 & 2 \\
+Threonine & C4H9NO3 & 464 & 1 \\
+Tryptophan & C11H12N2O2 & 1,236 & 2 \\
+Tyrosine & C9H11NO3 & 2,888 & 2 \\
+Valine & C5H11NO2 & 1,845 & 2 \\
+Total: & 31 ref. formulas & 295,927 & matching formulas \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+\chapter{Customized Topology Loader}
+\label{appendix:loader_function}
+
+\begin{lstlisting}
+def load_topology(file_name: str):
+    """Get the topology out from the file. This function is a slightly reworked version of the topology method from md.load
+
+    Returns
+    -------
+    topology : mdtraj.Topology
+        A topology object
+    """
+    def get_node(file_name: str, root: str, name: str) -> tp.Any:
+        filters = tables.Filters(complib="zlib", shuffle=True, complevel=1)
+        f = tables.open_file(file_name, mode="r", filters=filters)
+        return f.get_node(root, name=name)
+    try:
+        raw = get_node(file_name, root="/", name="topology")[0]
+        if not isinstance(raw, string_types):
+            raw = raw.decode()
+        topology_dict = json.loads(raw)
+    except tables.NoSuchNodeError:
+        return None
+    topology = Topology()
+    for chain_dict in sorted(topology_dict["chains"], key=operator.itemgetter("index")):
+        chain = topology.add_chain()
+        for residue_dict in sorted(
+            chain_dict["residues"], key=operator.itemgetter("index")
+        ):
+            try:
+                resSeq = residue_dict["resSeq"]
+            except KeyError:
+                resSeq = None
+                warnings.warn(
+                    "No resSeq info found in HDF file, defaulting to zero-based idxs"
+                )
+            try:
+                segment_id = residue_dict["segmentID"]
+            except KeyError:
+                segment_id = ""
+            residue = topology.add_residue(
+                residue_dict["name"], chain, resSeq=resSeq, segment_id=segment_id
+            )
+            for atom_dict in sorted(
+                residue_dict["atoms"], key=operator.itemgetter("index")
+            ):
+                try:
+                    element = elem.get_by_symbol(atom_dict["element"])
+                except KeyError:
+                    element = elem.virtual
+                topology.add_atom(atom_dict["name"], element, residue)
+    atoms = list(topology.atoms)
+    for index1, index2 in topology_dict["bonds"]:
+        topology.add_bond(atoms[index1], atoms[index2])
+    return topology
+\end{lstlisting}
+
+
+\chapter{Molfind GraphMatcher}
+\label{appendix:graph_matcher}
+
+The \verb|NetworkX| isomorphism check does not, by default, check the identity of nodes and edges.
+This leads to the misidentification of molecules, as shown in Figure \ref{fig:mismatched_alanine}.
+To correct this, categorical node and edge matching was added to the \verb|nx.GraphMatcher|, ensuring that every molecule identified via comparison to the PubChem dataset was an exact structural match. \bigskip
+
+\begin{lstlisting}
+def update_graph_with_elements(graph):
+    """Updates reference graph with element symbols based on atomic numbers."""
+    for node, data in graph.nodes(data=True):
+        data['element'] = species_dict[data['atomic_number']]
+    return graph
+
+def add_element_pairs_to_edges(graph):
+    """Adds element pair attributes to the edges of the graph for easier comparison."""
+    update_graph_with_elements(graph)
+    for (node1, node2) in graph.edges():
+        element1 = graph.nodes[node1]['element']
+        element2 = graph.nodes[node2]['element']
+        graph.edges[node1,node2]['element_pair'] = '-'.join(sorted([element1,element2]))
+
+def edge_match(edge1, edge2):
+    """Simple check for element pairs to ensure correct bonding pattern in every molecule that is isomorphic with a reference grah."""
+    return edge1['element_pair'] == edge2['element_pair']            
+\end{lstlisting}
+
+This correction is implemented into the loop where graph comparisons are made, just before the graph of a molecular fragment that was found in the simulation trajectory is compared to a reference graph stored in the PubChem dataset. \bigskip
+
+\begin{lstlisting}
+add_element_pairs_to_edges(fragment_graph)
+add_element_pairs_to_edges(graph)
+node_match = nx.isomorphism.categorical_node_match('element', '')
+edge_match = nx.isomorphism.categorical_edge_match('element_pair', '')
+gm = nx.isomorphism.GraphMatcher(graph, fragment_graph,
+                    node_match=node_match, edge_match=edge_match)
+\end{lstlisting}
+
+
+\chapter{Formula Matches Versus Structural Matches}
+\label{appendix:frag_vs_mol}
+
+\begin{table}[h!]
+\centering
+\caption[Comparison of fragment formulas matching a reference formula to structural matches]{Comparison of total formulas matching a reference formula to the actual structural matches identified after the graph comparison across the entire Hero Run simulation.
+}\label{tbl:formula_vs_mol}
+\begin{tabularx}{0.6125\textwidth}{lrlr}  
+\toprule
+Formula & Matches & Name & Matches \\
+\midrule
+\ce{C5H5N5} & 2,086 & Adenine & 0 \\
+\ce{C3H7NO2} & 5,628,694 & Alanine & 445,342 \\
+\ce{C5H10N2O3} & 25,038 & Alanylglycine & 0 \\
+\ce{C6H14N4O2} & 293 & Arginine & 0 \\
+\ce{C4H8N2O3} & 71,916 & Asparagine & 971 \\
+\ce{C4H7NO4} & 35,248 & Aspartic Acid & 439 \\
+\ce{C10H20O2} & 298 & Capric acid & 0 \\
+\ce{C8H16O2} & 10,562 & Caprylic acid & 137 \\
+\ce{C4H5N3O} & 1,570,671 & Cytosine & 227 \\
+\ce{C5H10O4} & 2,976 & Deoxyribose & 0 \\
+\ce{C5H9NO4} & 10,897 & Glutamic Acid & 37 \\
+\ce{C5H10N2O3} & 25,038 & Glutamine & 42 \\
+\ce{C2H5NO2} & 19,724,180 & Glycine & 5,297,484 \\
+\ce{C4H8N2O3} & 71,916 & Glycylglycine & 14 \\
+\ce{C5H5N5O} & 1,269 & Guanine & 0 \\
+\ce{C6H9N3O2} & 215,761 & Histidine & 0 \\
+\ce{C6H13NO} & 59,855 & Isoleucine & 30 \\
+\ce{C12H24O2} & 7 & Lauric acid & 0 \\
+\ce{C6H13NO} & 59,855 & Leucine & 46 \\
+\ce{C6H14N2O2} & 5,877 & Lysine & 10 \\
+\ce{C9H11NO2} & 2,377,381 & Phenylalanine & 0 \\
+\ce{C5H9NO} & 6,884,429 & Proline & 0 \\
+\ce{C5H10O5} & 109 & Ribose & 0 \\
+\ce{C3H7NO3} & 227,175 & Serine & 2,183 \\
+\ce{C4H9NO3} & 67,953 & Threonine & 202 \\
+\ce{C5H6N2O2} & 3,271,455 & Thymine & 9 \\
+\ce{C11H12N2O2} & 253,587 & Tryptophan & 0 \\
+\ce{C9H11NO3} & 461,133 & Tyrosine & 0 \\
+\ce{C4H4N2O2} & 3,907,529 & Uracil & 414 \\
+\ce{C5H11NO} & 284,861 & Valine & 591 \\
+Total & 45,198,194 & Total & 5,748,178 \\
+\bottomrule
+\end{tabularx}
+\end{table}

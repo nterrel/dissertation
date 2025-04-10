@@ -25,15 +25,15 @@ The work detailed here exists at this intersection, with the aim of bridging the
 \section{The Modern Era of Computational Chemistry}
 \label{sec:ML_in_chem}
 The emergence of machine learning (ML) marked a transformative era of computing. 
-As highlighted by LeCun \cite{deep_learning_lecun}, deep learning models have excelled in many areas of data processing and, while the most popularly discussed applications are in image and natural language processing, learning models have excelled at pattern recognition and prediction in scientific data.
-By leveraging vast amounts of quantum mechanical data, learning models can be trained to approximate the solutions to the Schrödinger equation with remarkable accuracy, mimicking the results of high-level QM computations.
+As highlighted by Yann LeCun \cite{deep_learning_lecun}, deep learning models have excelled in many areas of data processing and, while the most popularly discussed applications are in image and natural language processing, learning models have excelled at pattern recognition and prediction in scientific data.
+With vast amounts of quantum mechanical data, learning models can be trained to approximate the solutions to the Schrödinger equation with remarkable accuracy, mimicking the results of high-level QM computations.
 Data-driven models have made it possible to predict molecular energies \cite{deep_tensor_NNs_schutt, prediction_errors_ml_lower_than_dft_faber, ml_atomization_energies_rupp}, 
 forces \cite{interatomic_ff_ML_glielmo, md_onthefly_ml_forces_li}, 
 and other properties \cite{PerSpect_ml, TensorMol}
-at speeds many orders of magnitude faster than computing such data with traditional QM methods on an approximate scale $O(N)$. 
+at speeds orders of magnitude faster than computing such data with traditional QM methods on an approximate scale $O(N)$. 
 
 Approaches to \textit{ab initio} molecular dynamics (AIMD) involve computing the interactions between nuclei and electrons, which becomes numerically demanding as the system grows larger than a few atoms.
-Additionally, atomic motion must be modeled on very short timescale for dynamic calculations, leading to AIMD being an impractical approach for many chemical systems.
+Additionally, atomic motion must be modeled on very short timescales for dynamic calculations, leading to AIMD being an impractical approach for many chemical systems.
 On the other hand, MD with classical physics treat molecules with a sort of ball-and-spring representation, where atoms oscillate around equilibrium bonding distances with neighboring, bonded atoms.
 This approach to chemical simulations has long been the standard for studying macromolecular systems, notably biomolecules and polymers.
 However, many systems of biological relevance include changes to bonding (\textit{e.g.}, reactions taking place in protein active sites), which force fields are unable to model due to explicitly defining the molecular topology.
@@ -49,7 +49,7 @@ To minimize this, there are a few important considerations when implementing a m
 
 \subsection{Atomic Representation}
 \label{subsec:ML_atomic_representation}
-In order to train learning models, or use any computational method for chemical systems, one must consider the molecular (or atomic) representation which defines the system. 
+In order to train learning models, or use any computational method for chemical systems, one must consider the molecular or atomic representation which defines the system. 
 This is especially important in atomistic ML models, where the atomic representation is the input which the predictive algorithm uses to estimate a property of the system.
 Many viable pre-defined atomic descriptors have been reported in the literature \cite{atom_centered_symmetry_function_behler, PIP_NN, DeePMD, esders_atomic_NNP}, which focus on identifying the local chemical environment surrounding each atom. 
 Some applications further refine these representations with learnable descriptors, which can fit to more complex data on-the-fly as needed \cite{wACSF, SchNet, PhysNet, AIMNet_NSE, NequIP, interatomic_descriptors_kabylda}.
@@ -101,14 +101,14 @@ gradient-domain machine learning \cite{ml_energy_conserving_ff_chmiela},
 and deep artificial neural networks (ANN) \cite{pes_fitted_by_NN_handley, ab_initio_pes_using_ml_lu, ml_pes_jiang}. 
 Of these, some models---such as Gaussian process regression models---prioritize interpretability and precision of predictions, while others, particularly ANN potential models, emphasize the scalability and accuracy of high-dimensional potential energy landscapes in diverse systems.
 
-Historically, neural network models were seen as an excellent tool for specialized approaches to understanding specific chemical systems \cite{specialized_nnp1, specialized_nnp2}, but breakthroughs in flexible, generalizable models have shifted the focus to building models which can predict properties of any molecular system within the realm of the data on which it was trained \cite{behler_parrinello, ani-1}. 
+Historically, neural network models were seen as an excellent tool for specialized approaches to understanding specific chemical systems \cite{specialized_nnp1, specialized_nnp2}, but breakthroughs in flexible, generalizable models have shifted the focus to building models which can predict properties of any molecular system within the realm of the data on which it was trained \cite{ani-1, behler_parrinello}. 
 Deep neural networks are a mathematical framework involving a series of nodes assembled in layers. 
 An example of a small but typical deep neural network is given in \ref{fig:nn_arch}, created using NN-SVG \cite{NN_SVG}.
 
 \begin{figure}[!h]
     \centering
     \includegraphics[width=0.8\linewidth]{Images/nn_arch.png}
-    \caption[Example structure of deep neural network]{Example structure of a deep neural network architecture comprised of an input layer, two hidden layers, and an output layer. The weights on each connection are represented by the intensity of the line the nodes.}
+    \caption[Example structure of a deep neural network]{Example structure of a deep neural network architecture comprised of an input layer, two hidden layers, and an output layer. The weights on each connection are represented by the intensity of the line the nodes.}
     \label{fig:nn_arch}
 \end{figure}
 
@@ -130,7 +130,7 @@ The output layer produces a prediction value for the given input, though sometim
 
 The size and shape of neural networks greatly influence their ability to capture complex behavior in chemical systems.
 Shallow networks with few neurons are excellent tools for learning the patterns in low-dimensional data, but many interacting chemical species require an increasingly broad and deep network size to learn the landscape of possible chemical interactions.
-However, larger network sizes are not necessarily better: excessively deep neural networks are more costly to train and increase risks of overfitting, while networks with too many neurons expect higher-dimensional behavior than the interactions captured in the training data.
+However, larger network sizes are not necessarily better: excessively deep neural networks are more costly to train and increase risks of overfitting; networks with too many neurons expect higher-dimensional behavior than the interactions captured in the training data.
 Balancing the size of networks with the complexity and scope of the data used in training is vital for designing model architectures that achieve the accuracy and efficiency that has become synonymous with interatomic neural network potential (NNP) models. 
 
 Supervised training of ML models involves iteratively passing data through the networks and asking the model to predict a desired property of the data.
@@ -141,7 +141,7 @@ Another important hyperparameter used in training neural network models is the l
 Learning rate plays an important role in reaching convergence when training: a large value can prevent the model from reaching stable predictions, while low learning rates can slow the training process and lead to increased computational costs to reach converged behavior.
 
 Achieving broad generalizability of chemical systems requires large quantities of carefully crafted training data.
-Training efficiency can be increased by batching data into smaller segments, which helps the model learn the relationship between molecular structure and the desired predicted properties without specifically memorizing individual pieces of the training data, which we refer to as overfitting.
+Training efficiency can be increased by batching data into smaller segments, which helps the model learn the relationship between molecular structure and the desired predicted properties without specifically memorizing individual pieces of the training data, which is referred to as overfitting.
 The choice of training data greatly impacts the ability of a model to extrapolate between conformational and configurational relationships observed in training with the novel use cases encountered in inference. 
 Without representing generalized behavior in the training data, a model will be unable to represent generalizable performance and applicability.
 Section \ref{subsec:Data quality and availability} explores the importance of comprehensive training data in the development of ML models.
@@ -150,7 +150,7 @@ Section \ref{subsec:Data quality and availability} explores the importance of co
 \label{subsec:Data quality and availability}
 
 Statistical learning models are bounded in accuracy by the quality and quantity of data used in training. 
-Many applications of machine learning, such as computer vision, have an abundance of data available for training a model to artificially reproduce. \cite{deep_learning_lecun}
+Many applications of machine learning, such as computer vision, have an abundance of data available for training a model to artificially reproduce \cite{deep_learning_lecun}. 
 In computational chemistry, however, the object is largely to explore and model behavior that is not understood well, meaning the data which describes phenomena of interest is often sparce and must be generated specifically \cite{ml_energy_conserving_ff_chmiela, pes_fitted_by_NN_handley, ab_initio_pes_using_ml_lu, protein_ff_fragmentation_nn_wang, PES_gasphase} for use in training a learning model to reproduce the physical behavior of systems of interest. 
 
 Data quality is an abstract and difficult to define concept.
@@ -194,11 +194,11 @@ One such example is explored in Section \ref{sec:ANI_intro}, which will remain t
 \section{The Artificial NeurAl networK engINe for Molecular Energies: ANI}
 \label{sec:ANI_intro}
 
-Within the realm of machine learning in chemistry and neural network potentials, the Artificial NeurAl networK engINe for Molecular Energies (ANAKIN-ME or, more commonly, ANI) \cite{ani-1} was a landmark development in potential energy surface predictions.
+Within the realm of machine learning in chemistry and neural network potentials, the Artificial NeurAl networK engINe for Molecular Energies (ANAKIN-ME, commonly referred to as ANI) \cite{ani-1} was a landmark development in potential energy surface predictions.
 Building on the foundations set by earlier NNP models, such as HDNN \cite{behler_parrinello} by Behler and Parrinello, ANI-1 used an atom-specific neural network architecture to predict molecular energies with chemical accuracy comparable to density functional theory at a speedup of approximately $10^6$.
 Implemented in a C++ and CUDA program called NeuroChem, ANI-1 was trained on a dataset \cite{ani-1_dataset} of 17.2 million small organic molecules containing only hydrogen, carbon, nitrogen, and oxygen atoms. 
 Despite the training set containing only up to 8 heavy (non-hydrogen) atoms, the model performed well on test sets of 10-24 atoms---within 1 kcal/mol of the DFT reference energy for near-equilibrium structures \cite{ani-1}.
-ANI-1x \cite{ani-1x} and 1ccx \cite{ani-1ccx} were introduced as an improvement over ANI-1 by leveraging smaller, more carefully crafted datasets to achieve greater accuracy, generalization, and scalability; the cultivation of these datasets is explored in Subsection \ref{subsec:ANI_datasets}.
+ANI-1x \cite{ani-1x} and 1ccx \cite{ani-1ccx} were introduced as an improvement over ANI-1 by using smaller, more carefully crafted datasets to achieve greater accuracy, generalization, and scalability; the cultivation of these datasets is explored in Subsection \ref{subsec:ANI_datasets}.
 Figure \ref{fig:accuracy-cost} qualitatively demonstrates how the various published ANI models perform against routinely applied methods in computational chemistry, showcasing that ANI is capable of predicting molecular energies with first-principles levels of accuracy at approximately the same cost as force field methods.
 
 \begin{figure}[!ht]
@@ -221,7 +221,7 @@ To better understand the ANAKIN-ME methodology, we must look more closely at a f
 \label{subsec:AEV}
 
 A fundamental component of the predictive accuracy of ANI models is the construction of the Atomic Environment Vector (AEV) \cite{ani-1}, which provides a systematic approach to encoding local atomic interactions.
-Using the modified BP symmetry functions \cite{behler_parrinello} given in Equations \ref{eq:radial_symmetry_function} and \ref{eq:angular_symmetry_function} within a specified cutoff radius---5.2 \angstrom for the radial component and 3.5 \angstrom for the angular component---an atom-centered representation of the local chemical environment is constructed into a fixed-length vector.
+Using the modified BP symmetry functions \cite{behler_parrinello} given in Equations \ref{eq:radial_symmetry_function} and \ref{eq:angular_symmetry_function} within a specified cutoff radius---5.1 \angstrom for the radial component and 3.5 \angstrom for the angular component---an atom-centered representation of the local chemical environment is constructed into a fixed-length vector.
 An example of the angular AEV radius is given in Figure \ref{fig:aev_radius}.
 The leftmost image shows the molecule used in the example, while the middle image is a demonstration of the cutoff radius, and the rightmost image shows how atoms outside of this radius are not seen by the atom an AEV is being constructed for.
 
@@ -236,12 +236,11 @@ As described in Subsection \ref{subsec:ML_atomic_representation}, the radial com
 This representation is designed to be rotationally, translationally, and permutationally invariant, meaning that chemically equivalent atoms are treated consistently regardless of their spatial orientation or ordering within the molecular structure.
 Unlike Behler-Parrinello symmetry functions, the AEV computer utilized in the ANI methodology incorporates information about the atom types (elements) encoded in the atomic representation, which in turn yields lower-error predictions on multi-molecule training sets and permits better transferability \cite{ani-1}.
 Figure \ref{fig:aev_construction} is a schematic representation of the AEV construction. 
-For a full list of parameters used in the TorchANI AEV computer, see Appendix \ref{appendix:AEV_param}.
 
 \begin{figure}[hb]
     \centering
     \includegraphics[width=1\linewidth]{Images/aev_radius/AEV_construction.png}
-    \caption[Example of atomic environment vector construction]{Example of the terms in an AEV for the lone oxygen in the C$_6$H$_{10}$O molecule used in Fig. \ref{fig:aev_radius}.}
+    \caption[Schematic of atomic environment vector construction]{Example of the terms in an AEV for the lone oxygen in the C$_6$H$_{10}$O molecule used in Fig. \ref{fig:aev_radius}.}
     \label{fig:aev_construction}
 \end{figure}
 
@@ -259,8 +258,7 @@ The following section explores the architecture of ANI models, and how the fixed
 
 The ANI models use a modular neural network architecture, where each unique atom type employs a species-specific feedforward network to learn the relationships between local atomic environment and the contribution of each atom in the system to the total molecular energy.
 This energy decomposition makes it possible for ANI to efficiently scale to systems outside of the scope of the training data. 
-Each of the species-specific networks are similar in structure, containing the same number of neurons in the input layer but employ different hidden layer shapes due to variations in atomic bonding and dataset composition.
-Full network specifications for ANI-1x and 2x-like networks are provided in Appendix \ref{appendix:NN_arch}.
+Each of the species-specific networks are similar in structure, containing the same number of neurons in the input layer (equal to the AEV size) but employ different hidden layer shapes due to variations in atomic bonding and dataset composition.
 
 The hidden layers transform the input AEV into a high-dimensional latent feature space where patterns in atomic interactions and energy can be learned effectively.
 The input signal undergoes dimensional reduction with each hidden layer, becoming more abstract to capture nonlinear, chemically relevant patterns in the data input to the network. 
@@ -289,7 +287,7 @@ This process of iteratively updating weights is called backpropagation.
 Batching data into small (relative to the overall dataset) segments allows backpropagation to be accelerated by efficiently updating the weights of each network based on a representative subset of molecules. 
 
 Flexible neural network architecture, along with the reliablity of AEV descriptors as the input to harness the power and efficiency of NNPs, enable ANI models to be scalable to large systems and provide generalized representations of atomic interactions within molecules.
-There is still, however, one important aspect of the ANAKIN-ME methodology to explore: the dataset used in training, which is crucial to the transferability of ANI models.
+There is still one important aspect of the ANAKIN-ME methodology to explore: the dataset used in training, which is crucial to the transferability of ANI models.
 
 
 \subsection{The ANI Datasets}
@@ -330,7 +328,7 @@ Datasets listed here are available at other levels of theory, though $\mathrm{\o
       Dataset & \# conformers & Utility & Note \\
       \hline
       ANI-1 & 17,216,350 & Original training set & Sampled from 57,951 unique molecules; up to 8 heavy atoms \\
-      ANI-1x & 4,956,005 & 1x-like training set & Sampled with active learning from ANI-1; up to 63 atoms\\ 
+      ANI-1x & 4,956,005 & 1x-like training set & Sampled with active learning from ANI-1, GDB-11, ChEMBL; up to 63 atoms\\ 
       ANI-1ccx & 489,515 & Transfer learning set & Sampled with active learning from ANI-1x; up to 55 atoms \\
       ANI-2x & 9,651,712 & 2x-like training set & Includes all 1x conformers plus compounds containing S, F, Cl; up to 63 atoms \\
       COMP6v1 & 101,352 & 1x-like testing set & Benchmark data $\notin$ training sets; up to 312 atoms \\ 
