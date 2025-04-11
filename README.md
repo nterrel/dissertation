@@ -2,76 +2,93 @@
 
 Based on the UF dissertation template provided by [UF IT](https://it.ufl.edu/helpdesk/graduate-resources/ms-word--latex-templates/)
 
-This is not included in the `exampleMasterFile.tex` file, just a remnant from trying to store this locally and on GitHub -- but the compiler on my laptop creates a bunch of files that I got tired of managing and couldn't figure out how to store them all in one `build` directory. 
-
-## Chapters (WIP)
+## Chapters
 
 1. Introduction and background information
 
     a. ML in chemistry:
 
-        - Atomic representation
+        i. Atomic representation
 
-        - Model architecture
+        ii. Model architecture
 
-        - Data quality and availability
+        iii. Data quality and availability
 
     b. ANAKIN-ME
 
-        - AEVs
+        i. AEVs
 
-        - ANI model architecture
+        ii. ANI model architecture
+
+        iii. ANI datasets
 
 2. Exploration of atomistic predictions
 
     a. ANI predictions
 
-        - Total energy as a sum of atomic energies
+        i. Molecular energy as a sum of atomic contributions
+   
+        ii. Uncertainty in ANI neural network potentials
+   
+        iii. Flaws in Measuring Uncertainty via Predicted Total Energy
+   
 
-        - Uncertainty in ANI neural network predictions
-
-        - Exploring the flaws in predicting total energy as a sum of atomic energies
-
-    b. Drawback of atomic energy predictions
+    b. Uncertainty of atomic predictions
 
     c. Need for a practical, physical quantity to estimate uncertainty
 
 3. Trends in atomic force predictions by ANI neural network potentials
 
-    a. Potential solution
+    a. Potential solution for an atomistic QBC measure
 
-        - Forces
+        i. Force directional predictions
 
-        - Force magnitudes
+        ii. Force magnitude predictions
 
     b. Analyzing the uncertainty of force predictions
 
-        - Atom isolator
+        i. LUKE: Use the Forces
+   
+        ii. Drawback: configurational sampling
 
-        - Capping atoms
+4. Early Earth chemistry with LAMMPS-ANI
 
-        - Drawback: configurational sampling
+    a. Interface of TorchANI and LAMMPS
 
-4. Simulating and distributing chemical simulations with LAMMPS-ANI
+    b. ANI-1xnr
 
-    a. CUDA-accelerated AEV computation
+    c. The Miller-Urey experiment
 
-    b. GPU parallelization
+        i. CUDA-accelerated molecule finder
 
-    c. ANI-1xnr
+        ii. The small early earth system
 
-    d. The Miller Experiment
+        iii. The medium early earth system
 
-6. Analysis of organic reactions under primordial earth conditions; Hero Run
+        iv. The early earth hero run
 
-    a. MolFind
+5. Analysis of organic reactions under primordial earth conditions; Hero Run
 
-        - GraphMatcher
+    a. Overhauling the MolFind Analysis Tool
 
-        - Parallelization
+        i. Loading simulation data to memory
 
-    b. 
+        ii. Categorical graph matching
 
-## File descriptions
+        iii. Preprocessing and efficiency
 
-* `ufdissertation.cls` -- don't change! This is the class file that describes the formatting. Says to only change if you know what you're doing (I don't).
+    b. Restarts: quench analysis
+
+    c. Exploring new molecular configurations
+
+    d. Expanding the search
+
+    e. Discussion of results
+
+6. Concluding remarks
+
+    a. Reflection on uncertainty in ANI predictions
+
+    b. Reflection on early earth reactive simulations
+
+8. Future work
